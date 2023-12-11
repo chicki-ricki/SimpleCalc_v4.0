@@ -1,0 +1,133 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+  }
+  
+  body {
+	background-image: linear-gradient(to right, rgba(0, 0, 255, 0.1), rgba(255, 255, 0, 0.1)),
+	url("/static/img/backgroundMathw4.jpg");;
+	/*background: linear-gradient(to right, #f12711, #f5af19);*/
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .calculator {
+	width: 500px;
+	height: auto;
+	background-color: rgba(50, 50, 50, 0.5);
+	margin: 150px auto;
+	border-radius: 20px;
+	padding: 10px;
+	box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+	  rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  }
+  
+  .display {
+	position: relative;
+	color: white;
+	font-size: 30px;
+	text-align: end;
+	padding-top: 80px;
+	padding-bottom: 40px;
+	padding-right: 12px;
+	word-wrap: break-word;
+  }
+  
+  .displaycopy {
+	position: absolute;
+	bottom: 30px;
+	right: 13px;
+	font-size: 10px;
+	color: lawngreen;
+  }
+
+  .buttons {
+	display: flex;
+	flex-wrap: wrap;
+  }
+  
+  .button {
+	border: none;
+	color: white;
+	border-radius: 5px;
+	padding: 10px 11px;
+	width: 15%;
+	margin: 5px 4px;
+	font-size: 20px;
+	background-color: rgba(64, 64, 64, 1);
+	box-shadow: rgba(14, 30, 37, 0.12) 0px 1px 2px 0px,
+	rgba(14, 30, 37, 0.32) 0px 1px 6px 0px;
+  }
+
+  .notapbutton {
+	border: none;
+	color: white;
+	border-radius: 5px;
+	padding: 10px 11px;
+	width: 15%;
+	margin: 5px 4px;
+	font-size: 20px;
+	background-color: rgb(92, 44, 0);
+	box-shadow: rgba(14, 30, 37, 0.12) 0px 1px 2px 0px,
+	rgba(14, 30, 37, 0.32) 0px 1px 6px 0px;
+  }
+
+  .input {
+	color: black;
+  }
+
+  .inputborder {
+	color: black;
+	width: 39%;
+  }
+
+  .inputx {
+	color: black;
+	width: 80%;
+  }
+
+  .up {
+	border: none;
+	color: white;
+	border-radius: 5px;
+	padding: 10px 11px;
+	width: 31%;
+	margin: 5px 4px;
+	font-size: 20px;
+	background-color: rgba(64, 64, 64, 1);
+	box-shadow: rgba(14, 30, 37, 0.12) 0px 1px 2px 0px,
+	rgba(14, 30, 37, 0.32) 0px 1px 6px 0px;
+  }
+
+  .down {
+	width: 31%;
+	margin: 5px 5px;
+	background-color: rgba(32, 32, 32, 1);
+  }
+  
+  .zero-btn {
+	padding: 30px 190px 26px 20px;
+  }
+  
+  .btn-orange {
+	background-color: orange;
+  }
+  
+  .btn-grey {
+	background-color: grey;
+  }
+  .btn-lightgrey {
+	background-color: lightgrey
+  }
+  .select {
+	margin-right: 7px;
+	background-color: rgba(32, 32, 32, 1);
+  }
+  .history {
+	margin-left: 8px;
+	margin-right: 7px;
+  }
+  .graph {
+	margin-right: 3px;
+  }
