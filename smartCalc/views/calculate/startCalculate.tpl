@@ -13,7 +13,7 @@
        <span class="displaytext" id="dtext">0</span>
         <div class="displaycopy" id="dcopy"></div>
       </div>
-    <div id="graphentryes" hidden>
+    <div id="graphentryes">
       <button class="notapbutton">X =</button>
       <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="xfrom" inputmode="numeric" name="xfrom"></input>
       <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="xto" inputmode="numeric" name="xto"></input>
@@ -21,13 +21,13 @@
       <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="yfrom" inputmode="numeric" name="yfrom"></input>
       <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="yto" inputmode="numeric" name="yto"></input>
     </div>
-    <div id="equalentryes" hidden>
+    <div id="equalentryes">
       <button class="notapbutton">X =</button>
       <input type="text" class="notapbutton btn-lightgrey inputx" placeholder="x=" inputmode="numeric" name="x"></input>
     </div>
       <div class="buttons">
-        <select name="mode" onchange="alert(this.value)" class="notapbutton up select">
-          <option value="calculate">calculate</option>
+        <select name="mode" class="notapbutton up select">
+          <option value="calculate" selected="selected">calculate</option>
           <option value="equal">equal</option>
           <option value="graph">graph</option>
         </select>
