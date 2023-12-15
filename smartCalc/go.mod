@@ -1,6 +1,6 @@
 module smartCalc
 
-go 1.19.2
+go 1.19
 
 require github.com/beego/beego/v2 v2.1.0
 

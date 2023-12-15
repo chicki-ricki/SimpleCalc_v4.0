@@ -1,3 +1,6 @@
 no_*
 .DS_Store
 examples
+
+# bin files
+smartCalc/smartCalc
