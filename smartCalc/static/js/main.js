@@ -25,7 +25,14 @@ buttons.map((button) => {
         break;
       case "=":
         try {
-          displaytext.innerText = eval(displaytext.innerText);
+          // displaytext.innerText = eval(displaytext.innerText);
+           let socket = new WebSocket("ws://localhost:8080/calculate/start");
+           socket.onopen = function() {
+            socket.send("js send message: text")
+           }
+           socket.onmessage = function(event) {
+           displaytext.innerText = `[message] Данные получены с сервера: ${event.data}`;
+          }
         } catch (e) {
           displaytext.innerText = "Error!";
         }
