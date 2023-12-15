@@ -28,7 +28,7 @@ buttons.map((button) => {
           // displaytext.innerText = eval(displaytext.innerText);
            let socket = new WebSocket("ws://localhost:8080/calculate/start");
            socket.onopen = function() {
-            socket.send("js send message: text")
+            socket.send(displaytext.innerText)
            }
            socket.onmessage = function(event) {
            displaytext.innerText = `[message] Данные получены с сервера: ${event.data}`;

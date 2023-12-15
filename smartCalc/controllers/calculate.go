@@ -25,7 +25,10 @@ func (c *CalculateController) Start() {
 	c.TplName = "calculate/startCalculate.tpl"
 	fmt.Println("start function are going")
 
-	var upgrader = websocket.Upgrader{}
+	var upgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+	}
 	ws, err := upgrader.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil)
 	if err != nil {
 		log.Fatalf("Cannot setup WebSocket connection: %v\n", err)

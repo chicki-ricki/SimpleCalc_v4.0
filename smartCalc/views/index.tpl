@@ -5,9 +5,7 @@
   <title>smartCalc</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link rel="shortcut icon" href="/static/img/Icon.png" type="image/x-icon" />
-
   <link rel="stylesheet" href="/static/css/index_style.css" />
-
 </head>
 
 <body>
