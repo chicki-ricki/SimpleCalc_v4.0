@@ -10,20 +10,24 @@
   <body>
     <div class="calculator">
       <div class="display" >
-       <span class="displaytext" id="dtext">0</span>
+        <span class="displaytext" id="dtext">0</span>
+        <div class="displaycopy" id="dcopy"></div>
+      </div>
+      <div class="displayEquation" id="dEqual">
+        <span class="displayEqualText" id="dEText">0</span>
         <div class="displaycopy" id="dcopy"></div>
       </div>
     <div id="graphentryes">
       <button class="notapbutton">X =</button>
-      <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="xfrom" inputmode="numeric" name="xfrom"></input>
-      <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="xto" inputmode="numeric" name="xto"></input>
+      <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="xfrom" inputmode="numeric" id="xfrom"></input>
+      <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="xto" inputmode="numeric" id="xto"></input>
       <button class="notapbutton">Y =</button>
-      <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="yfrom" inputmode="numeric" name="yfrom"></input>
-      <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="yto" inputmode="numeric" name="yto"></input>
+      <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="yfrom" inputmode="numeric" id="yfrom"></input>
+      <input type="text" class="notapbutton btn-lightgrey inputborder" placeholder="yto" inputmode="numeric" id="yto"></input>
     </div>
     <div id="equalentryes">
       <button class="notapbutton">X =</button>
-      <input type="text" class="notapbutton btn-lightgrey inputx" placeholder="x=" inputmode="numeric" name="x"></input>
+      <input type="text" class="notapbutton btn-lightgrey inputx" placeholder="enter X here" inputmode="numeric" id="x"></input>
     </div>
       <div class="buttons">
         <select name="mode" class="notapbutton up select">
