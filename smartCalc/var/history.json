@@ -1,0 +1,189 @@
+[
+    {
+        "mode": "calc",
+        "equation": "45*6",
+        "result": "270",
+        "entrys": "",
+        "xEqual": "",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "calc",
+        "equation": "74(14-6)",
+        "result": "74",
+        "entrys": "",
+        "xEqual": "",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "calc",
+        "equation": "14*8",
+        "result": "112",
+        "entrys": "",
+        "xEqual": "",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "equal",
+        "equation": "5x",
+        "result": "20",
+        "entrys": "{X=4} ",
+        "xEqual": "4",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "calc",
+        "equation": "78-6",
+        "result": "72",
+        "entrys": "",
+        "xEqual": "",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "equal",
+        "equation": "4x",
+        "result": "24",
+        "entrys": "{X=6} ",
+        "xEqual": "6",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "graph",
+        "equation": "4x",
+        "result": "Y {0.00 .. 92.00}",
+        "entrys": "X{4 .. 23} Y{56 .. 167} ",
+        "xEqual": "6",
+        "xFrom": "4",
+        "xTo": "23",
+        "yFrom": "56",
+        "yTo": "167"
+    },
+    {
+        "mode": "graph",
+        "equation": "4x",
+        "result": "Y {-16.00 .. 91.82}",
+        "entrys": "X{-4 .. 23} Y{56 .. 167} ",
+        "xEqual": "6",
+        "xFrom": "-4",
+        "xTo": "23",
+        "yFrom": "56",
+        "yTo": "167"
+    },
+    {
+        "mode": "graph",
+        "equation": "4x",
+        "result": "Y {0.00 .. 159.89}",
+        "entrys": "X{40 .. 23} Y{56 .. 167} ",
+        "xEqual": "6",
+        "xFrom": "40",
+        "xTo": "23",
+        "yFrom": "56",
+        "yTo": "167"
+    },
+    {
+        "mode": "equal",
+        "equation": "4x",
+        "result": "24",
+        "entrys": "{X=6} ",
+        "xEqual": "6",
+        "xFrom": "40",
+        "xTo": "23",
+        "yFrom": "56",
+        "yTo": "167"
+    },
+    {
+        "mode": "calc",
+        "equation": "45-9",
+        "result": "36",
+        "entrys": "",
+        "xEqual": "",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "calc",
+        "equation": "45*(45-42)",
+        "result": "135",
+        "entrys": "",
+        "xEqual": "",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "calc",
+        "equation": "cos(180)",
+        "result": "-1",
+        "entrys": "",
+        "xEqual": "",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "calc",
+        "equation": "acos(-1)",
+        "result": "180",
+        "entrys": "",
+        "xEqual": "",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "calc",
+        "equation": "14*8",
+        "result": "112",
+        "entrys": "",
+        "xEqual": "",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "equal",
+        "equation": "5x",
+        "result": "225",
+        "entrys": "{X=45} ",
+        "xEqual": "45",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "graph",
+        "equation": "5x",
+        "result": "Y {-25.00 .. 280.00}",
+        "entrys": "X{-5 .. 56} Y{-12 .. 890} ",
+        "xEqual": "45",
+        "xFrom": "-5",
+        "xTo": "56",
+        "yFrom": "-12",
+        "yTo": "890"
+    }
+]

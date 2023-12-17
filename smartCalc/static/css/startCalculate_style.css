@@ -33,6 +33,16 @@
 	padding-right: 12px;
 	word-wrap: break-word;
   }
+
+  .displayEquation {
+	position: relative;
+	color: white;
+	font-size: 30px;
+	text-align: end;
+	padding-bottom: 20px;
+	padding-right: 12px;
+	word-wrap: break-word;
+  }
   
   .displaycopy {
 	position: absolute;
@@ -83,8 +93,25 @@
   }
 
   .inputx {
-	color: black;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 11px;
+	margin: 5px 4px;
+	font-size: 20px;
+	background-color: rgba(92, 44, 0, 0);
+	box-shadow: rgba(14, 30, 37, 0.12) 0px 1px 2px 0px,
+	rgba(14, 30, 37, 0.32) 0px 1px 6px 0px;
+	position: relative;
+	/* position: absolute; */
 	width: 80%;
+	/* display: inline; */
+	/* display: flex; */
+	color: black;
+	/* font-size: 40px; */
+	text-align: end;
+	word-wrap: break-word;
+	align-self: right;
+
   }
 
   .up {
@@ -128,6 +155,7 @@
 	margin-left: 8px;
 	margin-right: 7px;
   }
+
   .graph {
 	margin-right: 3px;
   }

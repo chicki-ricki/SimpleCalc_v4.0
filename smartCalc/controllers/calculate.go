@@ -6,6 +6,10 @@ import (
 
 	beego "github.com/beego/beego/v2/server/web"
 	"github.com/gorilla/websocket"
+
+	// d "smartCalc/domains"
+
+	m "smartCalc/model"
 )
 
 type baseController struct {
@@ -15,6 +19,8 @@ type baseController struct {
 
 type CalculateController struct {
 	baseController
+	cnv convert
+	mod m.CalcModel
 }
 
 func (c *CalculateController) Calculate() {
@@ -22,6 +28,7 @@ func (c *CalculateController) Calculate() {
 }
 
 func (c *CalculateController) Start() {
+	var output string
 	c.TplName = "calculate/startCalculate.tpl"
 	fmt.Println("start function are going")
 
@@ -33,16 +40,25 @@ func (c *CalculateController) Start() {
 	if err != nil {
 		log.Fatalf("Cannot setup WebSocket connection: %v\n", err)
 	}
-	messageType, text, err := ws.ReadMessage()
-	if err != nil {
-		log.Println("Read message error:", err)
-		return
-	}
-	fmt.Println("ws: ", string(text))
-	text1 := []byte("this from calculate")
-	if err := ws.WriteMessage(messageType, text1); err != nil {
-		log.Println("Write message error:", err)
-		return
-	}
 	defer ws.Close()
+
+	// Message receive loop.
+	for {
+		messageType, text, err := ws.ReadMessage()
+		if err != nil {
+			return
+		}
+		fmt.Println("ws: ", string(text))
+		input, er := c.cnv.UIToModel(string(text))
+		if er {
+			output = ("Error string")
+		} else {
+			output = (c.cnv.ModelToUI((m.ModelCalc.GetCalcResult(input))))
+		}
+		if err := ws.WriteMessage(messageType, []byte(output)); err != nil {
+			log.Println("Write message error:", err)
+			return
+		}
+		// publish <- newEvent(models.EVENT_MESSAGE, uname, string(p))
+	}
 }
