@@ -7,7 +7,7 @@ import (
 	"image/color"
 	"image/draw"
 	d "smartCalc/domains"
-	t "smartCalc/tools"
+	// t "smartCalc/tools"
 	"strconv"
 	"strings"
 )
@@ -87,6 +87,7 @@ func (g *graphModel) entrysGraphCheck(in ModelsInput) bool {
 func (g *graphModel) setError(out *ModelsOutput) *ModelsOutput {
 	out.Err = true
 	out.ModelGraphResult.Err = true
+	out.ModelGraphResult.ResultStr = "Error"
 	return out
 }
 
@@ -103,9 +104,10 @@ func (g *graphModel) GetResult() (out ModelsOutput) {
 	g.graphImageBuild()
 	out.ModelGraphResult.ResultStr = fmt.Sprintf("Y {%.2f .. %.2f}", g.gRM.yGraphMin, g.gRM.yGraphMax)
 
-	if t.ExportImageToPng(g.gRM.graphImage, g.config.TempFileDir+g.config.TempGraph) != nil {
-		return *g.setError(&out)
-	}
+	out.ModelGraphResult.GraphImage = g.gRM.graphImage
+	// if t.ExportImageToPng(g.gRM.graphImage, g.config.TempFileDir+g.config.TempGraph) != nil {
+	// 	return *g.setError(&out)
+	// }
 
 	return
 }

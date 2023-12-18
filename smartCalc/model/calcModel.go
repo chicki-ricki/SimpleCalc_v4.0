@@ -1,6 +1,7 @@
 package model
 
 import (
+	"image/draw"
 	d "smartCalc/domains"
 )
 
@@ -62,10 +63,10 @@ type ModelResultEqual struct {
 
 // structure for Ouput Graph data
 type ModelResultGraph struct {
-	Err       bool   // true = error
-	Mode      int    // calc - 0, equal - 1 or graph - 2
-	ResultStr string // raw data
-	// GraphImage draw.Image
+	Err        bool   // true = error
+	Mode       int    // calc - 0, equal - 1 or graph - 2
+	ResultStr  string // raw data
+	GraphImage draw.Image
 }
 
 // common interface for services

@@ -26,6 +26,13 @@ func NewEquation(in ModelsInput) *equationModel {
 	}
 }
 
+func (e *equationModel) setError(out *ModelsOutput) *ModelsOutput {
+	out.Err = true
+	out.ModelEquationResult.Err = true
+	out.ModelEquationResult.ResultStr = "Error"
+	return out
+}
+
 // Implementing GetResult interface for equationModel
 func (e *equationModel) GetResult() (out ModelsOutput) {
 	// var rez calcViewResult
@@ -33,14 +40,10 @@ func (e *equationModel) GetResult() (out ModelsOutput) {
 	out.ModelEquationResult.Mode = 0
 
 	if e.Checked, e.err = e.onlyCheck(); e.err != nil {
-		out.Err = true
-		out.ModelEquationResult.Err = true
-		return
+		return *e.setError(&out)
 	}
 	if e.Result, e.err = e.onlyCalculate(e.prepareString(e.Checked)); e.err != nil {
-		out.Err = true
-		out.ModelEquationResult.Err = true
-		return
+		return *e.setError(&out)
 	}
 	out.ModelEquationResult.ResultStr = strconv.FormatFloat(e.Result, 'f', -1, 64)
 	return
@@ -150,6 +153,18 @@ func (e *equationModel) insertSpases(str string) string {
 			retStr += string(char) + " "
 		}
 	}
+	fmt.Println(retStr)
+
+	if string(retStr[0:1]) == "." && strings.Contains("0123456789", string(retStr[1:2])) {
+		retStr = fmt.Sprint("0" + retStr)
+	}
+
+	for i := 0; i < len(retStr)-2; i++ {
+		if string(retStr[i:i+1]) == " " && string(retStr[i+1:i+2]) == "." && strings.Contains("0123456789", string(retStr[i+2:i+3])) {
+			retStr = fmt.Sprint(retStr[0:i+1] + "0" + string(retStr[i+1:]))
+		}
+	}
+	fmt.Println(retStr)
 	return retStr
 }
 

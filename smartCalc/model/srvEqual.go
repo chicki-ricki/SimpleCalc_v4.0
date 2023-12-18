@@ -29,27 +29,32 @@ func NewEqual(in ModelsInput) *equalModel {
 	return &equal
 }
 
+func (e *equalModel) setError(out *ModelsOutput) *ModelsOutput {
+	out.Err = true
+	out.ModelEqualResult.Err = true
+	out.ModelEqualResult.ResultStr = "Error"
+	return out
+}
+
 // Implementing request interface for equalModel
 func (e *equalModel) GetResult() (out ModelsOutput) {
 	out.ModelEqualResult.Mode = 1
 	out.Mode = 1
+
 	str, err := e.equation.onlyCheck()
 	if err != nil {
-		out.Err = true
-		out.ModelEqualResult.Err = true
-		return
+		return *e.setError(&out)
 	}
+
 	if e.xEqual, err = strconv.ParseFloat(e.xEqualStr, 64); err != nil {
-		out.Err = true
-		out.ModelEqualResult.Err = true
-		return
+		return *e.setError(&out)
 	}
+
 	e.result, err = e.equation.onlyCalculate(e.equation.prepareString(e.equalPrepareString(str)))
 	if err != nil {
-		out.Err = true
-		out.ModelEqualResult.Err = true
-		return
+		return *e.setError(&out)
 	}
+
 	out.ModelEqualResult.ResultStr = strconv.FormatFloat(e.result, 'f', -1, 64)
 	return
 }

@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/static/css/startCalculate_style.css" />
   </head>
   <body>
+    <div class="commonBlock">
+    <div class="historyWindow" id="historyWindow"></div>
     <div class="calculator">
       <div class="display" >
         <span class="displaytext" id="dtext">0</span>
@@ -71,11 +73,18 @@
         <button class="button">.</button>
         <button class="button">^</button>
         <button class="button btn-orange">=</button>
-        <button class="notapbutton down">help</button>
-        <button class="notapbutton down history">history</button>
-        <button class="notapbutton down graph">graph</button>
+        <button class="notapbutton down" id="helpButton"><a href="/static/tmp/tempGraph.png" download="Cool_Graph.png">help</a>
+        </button>
+        <button class="notapbutton down history" id="historyButton">history</button>
+        <button class="notapbutton down graph" id="graphButton">graph</button>
       </div>
     </div>
+    <div class="graphWindow" id="graphWindow">
+      <img src="/static/img/background.png" class="graphImage" id="graphImage">
+      <button class="downGraph" id="downGraph">download graph</button>
+    </div>
+    </div>
+    
     <script src="/static/js/main.js"></script>
   </body>
 </html>

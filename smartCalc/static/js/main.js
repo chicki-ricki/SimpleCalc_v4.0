@@ -10,6 +10,10 @@ let
   polegraph = document.getElementById("graphentryes"),
   buttons = Array.from(document.querySelectorAll(".button")),
   buttonX = document.querySelector(".bigbutton")
+  graphWindow = document.getElementById("graphWindow"),
+  historyWindow = document.getElementById("historyWindow"),
+  // graphButton = document.getElementById("graphButton"),
+
 
   x = document.getElementById("x"),
   xFrom = document.getElementById("xfrom"),
@@ -17,11 +21,14 @@ let
   yFrom = document.getElementById("yfrom"),
   yTo = document.getElementById("yto");
 
-x.value = 0;
+x.value = 1;
 xFrom.value = -300;
 xTo.value = 300;
 yFrom.value = -300;
 yTo.value = 300;
+
+graphWindow.style.display = "none";
+historyWindow.style.display = "none";
 
 function showEntries (select, equal, graph, equation) {
   switch (select.value) {
@@ -47,14 +54,23 @@ function getEntries (select, x, xFrom, xTo, yFrom,yTo) {
     case 'calculate':
       return ("");
     case "equal":
+      if (x.value == "") {x.value = "1"}
       return (x.value.replace(/\s/g,'') + " ");
     case "graph":
+      if (xFrom.value == "") {xFrom.value = "-300"}
+      if (xTo.value == "") {xTo.value = "300"}
+      if (yFrom.value == "") {yFrom.value = "-300"}
+      if (yTo.value == "") {yTo.value = "300"}
       return (xFrom.value.replace(/\s/g,'') + " " + 
           xTo.value.replace(/\s/g,'') + " " + 
           yFrom.value.replace(/\s/g,'') + " " + 
           yTo.value.replace(/\s/g,'') + " ");
   } 
   return "";
+}
+
+function getRandomInRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // Set entries to hidden
@@ -66,15 +82,47 @@ select.addEventListener("change", function() {
   showEntries(select, poleequal, polegraph, displayEquation);
 });
 
-// Create WebSocket and assign "onmessage"
+uname = ""
+
+// Create WebSocket
 let socket = new WebSocket("ws://localhost:8080/calculate/start");
+
+// Assign "onmessage" for socket
 socket.onmessage = function(event) {
-  displaytext.innerText = `SERV: ${event.data}`;
+  switch (event.data[0]){
+    case "5":
+      uname = event.data.slice(2);
+      urlgraph = "/static/tmp/tempGraph" + uname + ".png"
+      // displaytext.innerText = uname;
+      break;
+    case "0":
+    case "1":
+      displaytext.innerText = event.data.slice(2);
+      break;
+    case "2":
+    displaytext.innerText = event.data.slice(2);
+    graphWindow.style.display = "block";
+    graphWindow.innerHTML = "<img src=\"" + urlgraph + "?dummy="+getRandomInRange(2, 500000)+"\" class=\"graphImage\" id=\"graphImage\"><button class=\"downGraph\" id=\"downGraph\">download graph</button>"
+  }
 }
+
 socket.onclose = function() {
   //reconnect
  socket = new WebSocket("ws://localhost:8080/calculate/start");
 }
+
+function download(url) {
+  const a = document.createElement('a')
+  a.href = url
+  a.download = "Cool_Graph.png"
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}
+
+downGraph.addEventListener("click", (e) => {
+  download(urlgraph)
+})
 
 // Handle copying equation to clipboard by click on the pole
 displaytext.addEventListener("click", (e) => {
@@ -132,6 +180,22 @@ switch (val) {
     }
   }
 }
+
+historyButton.addEventListener("click", (e) => {
+  if (historyWindow.style.display == "none") {
+    historyWindow.style.display = "block"
+  } else {
+    historyWindow.style.display = "none"
+  }
+})
+
+graphButton.addEventListener("click", (e) => {
+  if (graphWindow.style.display == "none") {
+    graphWindow.style.display = "block"
+  } else {
+    graphWindow.style.display = "none"
+  }
+})
 
 // Handle buttons reaction
 buttons.map((button) => {

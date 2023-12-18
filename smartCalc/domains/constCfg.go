@@ -50,7 +50,7 @@ func createNewMacConfig() *Cfg {
 	c.WorkDir = WD
 	c.AssetsDir = c.WorkDir + "/assets/"
 	c.LogDir = c.WorkDir + "/log/"
-	c.TempFileDir = c.WorkDir + "/tmp/"
+	c.TempFileDir = c.WorkDir + "/static/tmp/"
 	c.TempGraph = "tempGraph.png"
 	c.HistoryFile = c.WorkDir + "/var/history.json"
 	c.XWindowGraph = 600
@@ -72,7 +72,7 @@ func createNewLinuxConfig() *Cfg {
 	c.WorkDir = WD
 	c.AssetsDir = c.WorkDir + "/assets/"
 	c.LogDir = c.WorkDir + "/log/"
-	c.TempFileDir = c.WorkDir + "/tmp/"
+	c.TempFileDir = c.WorkDir + "/static/tmp/"
 	c.TempGraph = "tempGraph.png"
 	c.HistoryFile = c.WorkDir + "/var/history.json"
 	c.XWindowGraph = 600
