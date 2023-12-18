@@ -1,3 +1,6 @@
+GO=go
+#Go=go1.19.2
+
 format:
 	gofmt -w *.go
 	gofmt -w */*.go
@@ -5,7 +8,13 @@ format:
 
 lint:
 	golangci-lint run
-	go vet
+	${GO} vet
 
 run:
 	bee run
+
+test: testing
+	
+
+testing:
+	${GO} test ./... -cover 
