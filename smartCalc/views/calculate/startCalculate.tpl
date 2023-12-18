@@ -45,7 +45,7 @@
         <button class="button">)</button>
         <button class="button">&#37;</button>
         <button class="button">/</button>
-        <button class="button ">sin</button>
+        <button class="button">sin</button>
         <button class="button ">asin</button>
         <button class="button">7</button>
         <button class="button">8</button>
