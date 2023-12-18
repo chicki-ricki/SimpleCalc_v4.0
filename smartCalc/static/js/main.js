@@ -9,13 +9,19 @@ let
   poleequal = document.getElementById("equalentryes"),
   polegraph = document.getElementById("graphentryes"),
   buttons = Array.from(document.querySelectorAll(".button")),
-  buttons2 = Array.from(document.querySelectorAll(".button2")),
+  buttonX = document.querySelector(".bigbutton")
 
   x = document.getElementById("x"),
   xFrom = document.getElementById("xfrom"),
   xTo = document.getElementById("xto"),
   yFrom = document.getElementById("yfrom"),
   yTo = document.getElementById("yto");
+
+x.value = 0;
+xFrom.value = -300;
+xTo.value = 300;
+yFrom.value = -300;
+yTo.value = 300;
 
 function showEntries (select, equal, graph, equation) {
   switch (select.value) {
@@ -52,12 +58,12 @@ function getEntries (select, x, xFrom, xTo, yFrom,yTo) {
 }
 
 // Set entries to hidden
-showEntries(select, poleequal,polegraph, displayEquation)
+showEntries(select, poleequal,polegraph, displayEquation);
 
 // Handle mode select with change entries
 select.addEventListener("change", function() {
   // displaytext.innerText = `change select:` + select.value;
-  showEntries(select, poleequal, polegraph, displayEquation)
+  showEntries(select, poleequal, polegraph, displayEquation);
 });
 
 // Create WebSocket and assign "onmessage"
@@ -67,13 +73,13 @@ socket.onmessage = function(event) {
 }
 socket.onclose = function() {
   //reconnect
- socket = new WebSocket("ws://localhost:8080/calculate/start")
+ socket = new WebSocket("ws://localhost:8080/calculate/start");
 }
 
 // Handle copying equation to clipboard by click on the pole
 displaytext.addEventListener("click", (e) => {
       navigator.clipboard.writeText(document.getElementById('dtext').innerHTML);
-      displaycopy.innerText = "copyed"
+      displaycopy.innerText = "copyed";
 });
 
 function clickHandle(val, pole, entries) {
@@ -87,7 +93,7 @@ switch (val) {
     break;
   case "C":
     pole.innerText = "0";
-    displaycopy.innerText = ""
+    displaycopy.innerText = "";
     break;
   case "=":
     try {
@@ -99,18 +105,30 @@ switch (val) {
   case "+/-":
     pole.innerText = "-";
     break;
-  case "%":
-    let passedText = pole.innerText + "/100";
-    pole.innerText = eval(passedText);
-    pole.innerText = ""
+  case "cos":
+  case "acos":
+  case "sin":
+  case "asin":
+  case "tan":
+  case "atan":
+  case "ln":
+  case "log":
+  case "sqrt":
+  case "mod":
+  case "^":
+    if (pole.innerText != "0") {
+    pole.innerText += val + "(";
+  } else {
+    pole.innerText = val + "(";
+  }
     break;
   default:
     if (pole.innerText === "0" && val !== ".") {
       pole.innerText = val;
-      displaycopy.innerText = ""
+      displaycopy.innerText = "";;
     } else {
       pole.innerText += val;
-      displaycopy.innerText = ""
+      displaycopy.innerText = "";
     }
   }
 }
@@ -123,41 +141,15 @@ buttons.map((button) => {
     } else {
       clickHandle(e.target.innerText, displayEquation, getEntries(select, x, xFrom, xTo, yFrom, yTo))
     }
-    // switch (e.target.innerText) {
-    //   case "<=":
-    //     if (displaytext.innerText.length === 1){
-    //       displaytext.innerText = "0";
-    //     }else {
-    //       displaytext.innerText = displaytext.innerText.slice(0, displaytext.innerText.length - 1)
-    //     }
-    //     break;
-    //   case "C":
-    //     displaytext.innerText = "0";
-    //     displaycopy.innerText = ""
-    //     break;
-    //   case "=":
-    //     try {
-    //         socket.send(select.value + " " + displaytext.innerText)
-    //     } catch (e) {
-    //       displaytext.innerText = "Error!";
-    //     }
-    //     break;
-    //   case "+/-":
-    //     displaytext.innerText = "-";
-    //     break;
-    //   case "%":
-    //     let passedText = displaytext.innerText + "/100";
-    //     displaytext.innerText = eval(passedText);
-    //     displaycopy.innerText = ""
-    //     break;
-    //   default:
-    //     if (displaytext.innerText === "0" && e.target.innerText !== ".") {
-    //       displaytext.innerText = e.target.innerText;
-    //       displaycopy.innerText = ""
-    //     } else {
-    //       displaytext.innerText += e.target.innerText;
-    //       displaycopy.innerText = ""
-    //     }
-    // }
   });
+});
+
+buttonX.addEventListener("click", (e) => {
+  if (select.value != "calculate") {
+    if (displayEquation.innerText != "0") {
+      displayEquation.innerText += e.target.innerText;
+    } else {
+      displayEquation.innerText = e.target.innerText;
+    }
+  }
 });

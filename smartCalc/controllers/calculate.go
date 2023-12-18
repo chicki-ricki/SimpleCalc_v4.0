@@ -24,12 +24,14 @@ type CalculateController struct {
 }
 
 func (c *CalculateController) Calculate() {
-	c.TplName = "calculate/startCalculate.tpl"
+	// c.TplName = "calculate/startCalculate.tpl"
+	c.TplName = "calculate/startCalculate.html"
 }
 
 func (c *CalculateController) Start() {
 	var output string
-	c.TplName = "calculate/startCalculate.tpl"
+	// c.TplName = "calculate/startCalculate.tpl"
+	c.TplName = "calculate/startCalculate.html"
 	fmt.Println("start function are going")
 
 	var upgrader = websocket.Upgrader{
