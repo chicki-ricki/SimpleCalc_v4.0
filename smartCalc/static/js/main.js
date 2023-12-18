@@ -9,6 +9,7 @@ let
   poleequal = document.getElementById("equalentryes"),
   polegraph = document.getElementById("graphentryes"),
   buttons = Array.from(document.querySelectorAll(".button")),
+  buttons2 = Array.from(document.querySelectorAll(".button2")),
 
   x = document.getElementById("x"),
   xFrom = document.getElementById("xfrom"),
@@ -90,9 +91,7 @@ switch (val) {
     break;
   case "=":
     try {
-
         socket.send(select.value + " " + entries + pole.innerText.replace(/\s/g,''));
-      
       } catch (e) {
       pole.innerText = "Socket error!";
     }

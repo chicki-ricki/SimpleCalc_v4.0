@@ -75,5 +75,27 @@
         "xTo": "6",
         "yFrom": "5",
         "yTo": "6"
+    },
+    {
+        "mode": "calc",
+        "equation": "45-9",
+        "result": "36",
+        "entrys": "",
+        "xEqual": "",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    },
+    {
+        "mode": "equal",
+        "equation": "5x",
+        "result": "5",
+        "entrys": "{X=1} ",
+        "xEqual": "1",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
     }
 ]

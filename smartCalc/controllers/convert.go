@@ -75,7 +75,7 @@ func (c *convert) UIToModel(in string) (m.ModelsInput, bool) {
 	}
 	t.DbgPrint(fmt.Sprint("inArray:", inArray))
 	t.DbgPrint(fmt.Sprint("len(inArray):", len(inArray)))
-	if len(in) < 2 {
+	if len(inArray) < 2 {
 		return m.ModelsInput{}, true
 	}
 
