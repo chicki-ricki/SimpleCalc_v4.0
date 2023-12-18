@@ -11,7 +11,7 @@ var ()
 func TestNewCalcModel(t *testing.T) {
 	r := *NewCalcModel(configCalc)
 	s := reflect.TypeOf(r).String()
-	if s != "model.calcModel" {
+	if s != "model.CalcModel" {
 		t.Errorf("Creating object incorrect expected: %v: actual:%v", "model.calcModel", s)
 	} else if reflect.TypeOf(r.history).String() != "model.calcHistory" {
 		t.Errorf("Creating object incorrect expected: %v: actual:%v", "model.calcHistory", reflect.TypeOf(r.history).String())

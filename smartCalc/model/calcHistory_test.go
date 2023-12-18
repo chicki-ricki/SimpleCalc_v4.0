@@ -13,7 +13,7 @@ func TestNewCalcHistory(t *testing.T) {
 	ch := *NewCalcHistory(*configCalc)
 	if reflect.TypeOf(ch).String() != "model.calcHistory" {
 		t.Errorf("Creating object incorrect - expected: %v; actual: %v", "model.calcHistory", reflect.TypeOf(ch).String())
-	} else if ch.fileName != d.Config.HistoryFile {
+	} else if ch.fileName != configCalc.HistoryFile {
 		t.Errorf("incorrect filename - expected: %v; actual: %v", d.Config.HistoryFile, ch.fileName)
 	} else if reflect.TypeOf(ch.historyData).String() != "[]domains.HistoryItem" {
 		t.Errorf("Creating object incorrect - expected: %v ; actual: %v", "[]domains.HistoryItem", reflect.TypeOf(ch.historyData).String())

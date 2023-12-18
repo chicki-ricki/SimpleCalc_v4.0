@@ -14,10 +14,10 @@ import (
 )
 
 var (
-	configCalc = d.InitConfig("../config/clevercalc.cfg")
+	configCalc = d.InitConfig("../conf/clevercalcLinuxTest.cfg")
 	calcmodel  = NewCalcModel(configCalc)
 
-	TestPath = "/home/anton/go/src/clevercalc/test/"
+	TestPath = "../test/"
 
 	testCasesNewGraph = []struct {
 		enter  []string
