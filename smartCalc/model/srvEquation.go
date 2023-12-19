@@ -153,7 +153,7 @@ func (e *equationModel) insertSpases(str string) string {
 			retStr += string(char) + " "
 		}
 	}
-	fmt.Println(retStr)
+	// t.DbgPrint(fmt.Sprint("insertSpaces - after spaces added:", retStr))
 
 	if string(retStr[0:1]) == "." && strings.Contains("0123456789", string(retStr[1:2])) {
 		retStr = fmt.Sprint("0" + retStr)
@@ -164,7 +164,7 @@ func (e *equationModel) insertSpases(str string) string {
 			retStr = fmt.Sprint(retStr[0:i+1] + "0" + string(retStr[i+1:]))
 		}
 	}
-	fmt.Println(retStr)
+	// t.DbgPrint(fmt.Sprint("insertSpaces - after zero added:", retStr))
 	return retStr
 }
 

@@ -63,7 +63,7 @@ func (c *CalculateController) Start() {
 
 	uname := "_" + fmt.Sprint(rand.Intn(6000))
 	tmpGraphImageName := d.Config.TempFileDir + "tempGraph" + uname + ".png"
-	defer os.Remove(tmpGraphImageName)
+	defer c.removeTmpGraph(tmpGraphImageName)
 
 	if err := ws.WriteMessage(1, []byte("5 "+uname)); err != nil {
 		log.Println("Write message error:", err)
@@ -74,14 +74,16 @@ func (c *CalculateController) Start() {
 		if err != nil {
 			return
 		}
-		fmt.Println("ws: ", string(text))
+		t.DbgPrint(fmt.Sprint("ws: ", string(text)))
 		input, er := c.cnv.UIToModel(string(text))
+		t.DbgPrint(fmt.Sprint("input: ", input))
 		if er {
 			output = ("Error string")
 		} else {
 			modelsOutput := m.ModelCalc.GetCalcResult(input)
-
-			if modelsOutput.Mode == 2 && t.ExportImageToPng(modelsOutput.ModelGraphResult.GraphImage, tmpGraphImageName) != nil {
+			t.DbgPrint(fmt.Sprint("modelsOutput After equation:", modelsOutput))
+			if modelsOutput.Mode == 2 && !modelsOutput.Err &&
+				t.ExportImageToPng(modelsOutput.ModelGraphResult.GraphImage, tmpGraphImageName) != nil {
 				fmt.Println("cannot write tempGraph image to disk")
 			}
 			output = (c.cnv.ModelToUI(modelsOutput))
