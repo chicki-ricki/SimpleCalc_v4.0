@@ -24,7 +24,7 @@ type baseController struct {
 type CalculateController struct {
 	baseController
 	cnv convert
-	mod m.CalcModel
+	// mod m.CalcModel
 }
 
 type MessageToUI struct {
@@ -46,15 +46,19 @@ func (c *CalculateController) removeTmpGraph(fileName string) {
 }
 
 func (c *CalculateController) Start() {
-	var output string
+	var (
+		output   string
+		upgrader = websocket.Upgrader{
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+		}
+		// historyPath = "./../var/history.json"
+	)
+
 	// c.TplName = "calculate/startCalculate.tpl"
 	c.TplName = "calculate/startCalculate.html"
-	fmt.Println("start function are going")
+	// fmt.Println("start function are going")
 
-	var upgrader = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-	}
 	ws, err := upgrader.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil)
 	if err != nil {
 		log.Fatalf("Cannot setup WebSocket connection: %v\n", err)
@@ -63,13 +67,24 @@ func (c *CalculateController) Start() {
 
 	uname := "_" + fmt.Sprint(rand.Intn(6000))
 	tmpGraphImageName := d.Config.TempFileDir + "tempGraph" + uname + ".png"
-	defer os.Remove(tmpGraphImageName)
+	defer c.removeTmpGraph(tmpGraphImageName)
 
 	if err := ws.WriteMessage(1, []byte("5 "+uname)); err != nil {
 		log.Println("Write message error:", err)
 	}
+	
+	// historyFromModel := loadHistoryFromModel()
+	// if err := ws.WriteMessage(1, historyFromModel); err != nil {
+	// 	log.Println("Can not write data from model:", err)
+	// }
 	// Message receive loop.
 	for {
+		historyFromModel := loadHistoryFromModel()
+		if err := ws.WriteMessage(1, historyFromModel); err != nil {
+			log.Println("Can not write data from model:", err)
+		}
+
+
 		messageType, text, err := ws.ReadMessage()
 		if err != nil {
 			return
@@ -90,6 +105,7 @@ func (c *CalculateController) Start() {
 			log.Println("Write message error:", err)
 			return
 		}
+
 		// publish <- newEvent(models.EVENT_MESSAGE, uname, string(p))
 	}
 }

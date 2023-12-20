@@ -1,4 +1,3 @@
-
 // Set variable
 let 
   displaytext = document.querySelector(".displaytext"),
@@ -13,6 +12,7 @@ let
   graphWindow = document.getElementById("graphWindow"),
   historyWindow = document.getElementById("historyWindow"),
   // graphButton = document.getElementById("graphButton"),
+  historyButtons = "",
 
 
   x = document.getElementById("x"),
@@ -103,8 +103,33 @@ socket.onmessage = function(event) {
     displaytext.innerText = event.data.slice(2);
     graphWindow.style.display = "block";
     graphWindow.innerHTML = "<img src=\"" + urlgraph + "?dummy="+getRandomInRange(2, 500000)+"\" class=\"graphImage\" id=\"graphImage\"><button class=\"downGraph\" id=\"downGraph\">download graph</button>"
+    // load history form history file
+    case "9":
+      historyFromModel = event.data.slice(2);
+      showHistory(historyFromModel);
+      historyButtons = Array.from(document.getElementsByClassName("historyButtonsClass"));
+      showAlert(historyButtons);
+      // historyButtons = Array.from(document.getElementsByClassName("historyButtonsClass"));
+      // alert(historyButtons.length);
+      // historyButtons.map((hButton) => {
+      //   hButton.addEventListener("click", (e) => {
+      //   //   switch (select.value) {
+      //       // case "calculate":
+      //       //   console.log("e.target.data:", e.target.data);  
+      //         alert("test");
+      //         // displayEquation.innerText = "e.target.data.value";
+      //       //   break;
+          
+      //       // default:
+      //       //   break;
+      //   //   }
+      //   });
+      // });
   }
 }
+
+// historyButtons = Array.from(document.querySelectorAll);
+// historyButtons = Array.from(document.querySelectorAll("historyButtonsClass"))
 
 socket.onclose = function() {
   //reconnect

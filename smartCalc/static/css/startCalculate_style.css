@@ -31,6 +31,7 @@
 	box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
 	  rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 	  display: inline-block;
+	overflow: auto;
   }
 
   .graphWindow {
@@ -232,6 +233,14 @@
   .history {
 	margin-left: 8px;
 	margin-right: 7px;
+  }
+  
+  .historyButtonsClass {
+	width: 100%;
+	font-size: 15px;
+	border-radius: 5px;
+	background-color: #e7e7e7; color: black;
+	text-align: left;
   }
 
   .graph {
