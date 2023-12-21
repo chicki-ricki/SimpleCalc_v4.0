@@ -106,30 +106,12 @@ socket.onmessage = function(event) {
     // load history form history file
     case "9":
       historyFromModel = event.data.slice(2);
-      showHistory(historyFromModel);
+      historyJson = JSON.parse(historyFromModel);
+      showHistory(historyJson);
       historyButtons = Array.from(document.getElementsByClassName("historyButtonsClass"));
-      showAlert(historyButtons);
-      // historyButtons = Array.from(document.getElementsByClassName("historyButtonsClass"));
-      // alert(historyButtons.length);
-      // historyButtons.map((hButton) => {
-      //   hButton.addEventListener("click", (e) => {
-      //   //   switch (select.value) {
-      //       // case "calculate":
-      //       //   console.log("e.target.data:", e.target.data);  
-      //         alert("test");
-      //         // displayEquation.innerText = "e.target.data.value";
-      //       //   break;
-          
-      //       // default:
-      //       //   break;
-      //   //   }
-      //   });
-      // });
+      showClickHistoryButton(historyButtons, historyJson);
   }
 }
-
-// historyButtons = Array.from(document.querySelectorAll);
-// historyButtons = Array.from(document.querySelectorAll("historyButtonsClass"))
 
 socket.onclose = function() {
   //reconnect

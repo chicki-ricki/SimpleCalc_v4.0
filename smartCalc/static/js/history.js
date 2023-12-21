@@ -1,5 +1,4 @@
-function showHistory(historyFromModel) {
-    historyJson = JSON.parse(historyFromModel);
+function showHistory(historyJson) {
     historyJson.forEach(item => {
       let elem = document.createElement('div');
       if (item.equation.length > 20) {
@@ -34,19 +33,35 @@ function showHistory(historyFromModel) {
     });
 };
 
-function showAlert(historyButtons) {
+
+function showClickHistoryButton(historyButtons, historyJson) {
     historyButtons.map((hButton) => {
         hButton.addEventListener("click", (e) => {
-        //   switch (select.value) {
-            // case "calculate":
-            //   console.log("e.target.data:", e.target.data);  
-            alert(e.target.innerText);
-            // displayEquation.innerText = "e.target.data.value";
-            //   break;
-        
-            // default:
-            //   break;
-        //   }
+          let index = historyButtons.indexOf(hButton);
+          switch (historyJson[index].mode) {
+            case "calc":
+              select.selectedIndex = 0;
+              showEntries(select, poleequal, polegraph, displayEquation);
+              displaytext.innerText = historyJson[index].equation;
+              break;
+            case "equal":
+              select.selectedIndex = 1;
+              showEntries(select, poleequal, polegraph, displayEquation);
+              displayEquation.innerText = historyJson[index].equation;
+              x.value = historyJson[index].xEqual;
+              displaytext.innerText = 0;
+              break;
+            case "graph":
+              select.selectedIndex = 2;
+              showEntries(select, poleequal, polegraph, displayEquation);
+              displayEquation.innerText = historyJson[index].equation;
+              xFrom.value = historyJson[index].xFrom;
+              xTo.value = historyJson[index].xTo;
+              yFrom.value = historyJson[index].yFrom;
+              yTo.value = historyJson[index].yTo;
+              displaytext.innerText = 0;
+              break;
+          }
         });
     });
 }
