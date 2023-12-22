@@ -38,9 +38,9 @@ func (c *convert) copyGraphForModel(inArray []string) (input m.ModelsInput, err 
 func (c *convert) copyEqualForModel(inArray []string) (input m.ModelsInput, err bool) {
 	input.ModelEqualData.Mode = 1
 	input.Mode = 1
-	t.DbgPrint(fmt.Sprint("copyEqualForModel inArray:", inArray))
-	t.DbgPrint(fmt.Sprint("copyEqualForModel EqualValue", inArray[2]))
-	t.DbgPrint(fmt.Sprint("copyEqualForModel XEqualStr", inArray[1]))
+	t.Clg.DeepDebug(fmt.Sprint("_copyEqualForModel_ inArray:", inArray))
+	t.Clg.DeepDebug(fmt.Sprint("_copyEqualForModel_ EqualValue", inArray[2]))
+	t.Clg.DeepDebug(fmt.Sprint("_copyEqualForModel_ XEqualStr", inArray[1]))
 	if input.ModelEqualData.EqualValue = inArray[2]; strings.EqualFold(input.ModelEqualData.EqualValue, "") {
 		return input, true
 	} else if input.ModelEqualData.XEqualStr = inArray[1]; strings.EqualFold(input.ModelEqualData.XEqualStr, "") {
@@ -52,7 +52,7 @@ func (c *convert) copyEqualForModel(inArray []string) (input m.ModelsInput, err 
 
 // create ModelsInput with equation
 func (c *convert) copyEquationForModel(inArray []string) (input m.ModelsInput, err bool) {
-	t.DbgPrint(fmt.Sprint("Convert to equation"))
+	t.Clg.Debug("_copyEquationForModel_ Convert to equation")
 	input.ModelEquationData.Mode = 0
 	input.Mode = 0
 	if input.ModelEquationData.EqualValue = inArray[1]; inArray[1] == "" {
@@ -64,34 +64,35 @@ func (c *convert) copyEquationForModel(inArray []string) (input m.ModelsInput, e
 // converted interface to ModelsInput for Model
 func (c *convert) UIToModel(in string) (m.ModelsInput, bool) {
 
-	t.DbgPrint(fmt.Sprint("in:", in))
+	t.Clg.DeepDebug(fmt.Sprint("_UIToModel_ in:", in))
 	if in == "" {
 		return m.ModelsInput{}, true
 	}
 
 	inArray := strings.Fields(in)
 	for i, val := range inArray {
-		fmt.Printf("inArray i = %d, str = %s\n", i, val)
+		t.Clg.DeepDebug(fmt.Sprintf("_UIToModel_ inArray i = %d, str = %s", i, val))
 	}
-	t.DbgPrint(fmt.Sprint("inArray:", inArray))
-	t.DbgPrint(fmt.Sprint("len(inArray):", len(inArray)))
+
+	t.Clg.DeepDebug(fmt.Sprint("_UIToModel_ inArray:", inArray))
+	t.Clg.DeepDebug(fmt.Sprint("_UIToModel_ len(inArray):", len(inArray)))
 	if len(inArray) < 2 {
 		return m.ModelsInput{}, true
 	}
 
 	switch inArray[0] {
 	case "calculate":
-		t.DbgPrint(fmt.Sprint("Choice Calculate"))
+		t.Clg.DeepDebug(fmt.Sprint("_UIToModel_ Choice Calculate"))
 		if len(inArray) == 2 {
 			return c.copyEquationForModel(inArray)
 		}
 	case "equal":
-		t.DbgPrint(fmt.Sprint("Choice Equal"))
+		t.Clg.DeepDebug(fmt.Sprint("_UIToModel_ Choice Equal"))
 		if len(inArray) == 3 {
 			return c.copyEqualForModel(inArray)
 		}
 	case "graph":
-		t.DbgPrint(fmt.Sprint("Choice Graph"))
+		t.Clg.DeepDebug(fmt.Sprint("_UIToModel_ Choice Graph"))
 		if len(inArray) == 6 {
 			return c.copyGraphForModel(inArray)
 		}
@@ -105,13 +106,13 @@ func (c *convert) ModelToUI(output m.ModelsOutput) string {
 
 	switch output.Mode {
 	case 0:
-		t.DbgPrint(fmt.Sprint("EOUT:", output.ModelEquationResult))
+		t.Clg.DeepDebug(fmt.Sprint("_ModelToUI_ choice Equation OUT:", output.ModelEquationResult))
 		return fmt.Sprint(output.ModelEquationResult.Mode, " ", output.ModelEquationResult.ResultStr)
 	case 1:
-		t.DbgPrint(fmt.Sprint("EQLOUT:", output.ModelEqualResult))
+		t.Clg.DeepDebug(fmt.Sprint("_ModelToUI_ choice Equal OUT:", output.ModelEqualResult))
 		return fmt.Sprint(output.ModelEqualResult.Mode, " ", output.ModelEqualResult.ResultStr)
 	case 2:
-		t.DbgPrint(fmt.Sprint("GROUT:", output.ModelGraphResult))
+		t.Clg.DeepDebug(fmt.Sprint("_ModelToUI_ choice Graph OUT:", output.ModelGraphResult))
 		return fmt.Sprint(output.ModelGraphResult.Mode, " ", output.ModelGraphResult.ResultStr)
 	}
 

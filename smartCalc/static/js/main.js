@@ -49,22 +49,22 @@ function showEntries (select, equal, graph, equation) {
   } 
 }
 
-function getEntries (select, x, xFrom, xTo, yFrom,yTo) {
+function getEntries (select, x, xFrom, xTo, yFrom,yTo, space) {
   switch (select.value) {
     case 'calculate':
       return ("");
     case "equal":
       if (x.value == "") {x.value = "1"}
-      return (x.value.replace(/\s/g,'') + " ");
+      return (x.value.replace(/\s/g,'') + space);
     case "graph":
       if (xFrom.value == "") {xFrom.value = "-300"}
       if (xTo.value == "") {xTo.value = "300"}
       if (yFrom.value == "") {yFrom.value = "-300"}
       if (yTo.value == "") {yTo.value = "300"}
-      return (xFrom.value.replace(/\s/g,'') + " " + 
-          xTo.value.replace(/\s/g,'') + " " + 
-          yFrom.value.replace(/\s/g,'') + " " + 
-          yTo.value.replace(/\s/g,'') + " ");
+      return (xFrom.value.replace(/\s/g,'') + space + 
+          xTo.value.replace(/\s/g,'') + space + 
+          yFrom.value.replace(/\s/g,'') + space + 
+          yTo.value.replace(/\s/g,'') + space);
   } 
   return "";
 }
@@ -83,7 +83,7 @@ select.addEventListener("change", function() {
 });
 
 uname = ""
-
+fileDownload = ""
 // Create WebSocket
 let socket = new WebSocket("ws://localhost:8080/calculate/start");
 
@@ -101,8 +101,11 @@ socket.onmessage = function(event) {
       break;
     case "2":
     displaytext.innerText = event.data.slice(2);
+    if (displaytext.innerText != "Error") {
     graphWindow.style.display = "block";
-    graphWindow.innerHTML = "<img src=\"" + urlgraph + "?dummy="+getRandomInRange(2, 500000)+"\" class=\"graphImage\" id=\"graphImage\"><button class=\"downGraph\" id=\"downGraph\">download graph</button>"
+    graphSpan.innerHTML = "<img src=\"" + urlgraph + "?dummy="+getRandomInRange(2, 500000)+"\" class=\"graphImage\" id=\"graphImage\">"
+    fileDownload = displayEquation.innerText + "_" + getEntries(select, x, xFrom, xTo, yFrom, yTo, "_")
+    }
     // load history form history file
     case "9":
       historyJson = JSON.parse(event.data.slice(2));
@@ -121,17 +124,17 @@ socket.onclose = function() {
  socket = new WebSocket("ws://localhost:8080/calculate/start");
 }
 
-function download(url) {
+function download(url, fileDownload) {
   const a = document.createElement('a')
   a.href = url
-  a.download = "Cool_Graph.png"
+  a.download = "CleverCalc_" + fileDownload + ".png"
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
 }
 
 downGraph.addEventListener("click", (e) => {
-  download(urlgraph)
+  download(urlgraph, fileDownload)
 })
 
 // Handle copying equation to clipboard by click on the pole
@@ -213,7 +216,7 @@ buttons.map((button) => {
     if (select.value == "calculate") {
       clickHandle(e.target.innerText, displaytext, "");
     } else {
-      clickHandle(e.target.innerText, displayEquation, getEntries(select, x, xFrom, xTo, yFrom, yTo))
+      clickHandle(e.target.innerText, displayEquation, getEntries(select, x, xFrom, xTo, yFrom, yTo, " "))
     }
   });
 });
@@ -227,3 +230,27 @@ buttonX.addEventListener("click", (e) => {
     }
   }
 });
+
+// var div = document.getElementById('circle');
+// var listener = function(e) {
+//   div.style.left = e.pageX - 50 + "px";
+//   div.style.top = e.pageY - 50 + "px";
+// };
+
+// circle.addEventListener('mousedown', e => {
+//     document.addEventListener('mousemove', listener);
+// });
+
+// circle.addEventListener('mouseup', e => {
+//     document.removeEventListener('mousemove', listener);
+// });
+// .block1 {
+//   width: 100px;
+//   height: 100px;
+//   position: absolute;
+//   left: 50px;
+//   top: 50px;
+//   border-radius: 50%;
+//   background: blue;
+// }
+// <div class="block1" id="circle"></div>

@@ -74,18 +74,84 @@
         <button class="button">.</button>
         <button class="button">^</button>
         <button class="button btn-orange">=</button>
-        <button class="notapbutton down" id="helpButton"><a href="/static/tmp/tempGraph.png" download="Cool_Graph.png">help</a>
+        <button class="notapbutton down" id="helpButton">
+          <a href="#b" id="button">Помощь</a>
+          <a href="#x" class="overlay" id="b"></a>
+          <div class="window">
+                <h3>Информация по программе "CleverCalc"</h3>
+                <p>"Clevercalc" это расширяемый калькулятор на архитектуре MVP написанный на Golang и фреймворке BeeGo.</p>
+                <br>
+                <h3>Порядок работы:</h3>
+                <strong>в режиме "CALC":</strong>
+                <ol>
+                  <li>Наберите с помощью конопок необходимое выражение</li>
+                  <li>Нажмите кнопку "="</li>
+                  <li>Программа отобразит результат вычисления или ошибку, если выражение неверно.</li>
+                </ol>
+                <strong>в режиме "EQUAL":</strong>
+                <ol>
+                  <li>Наберите с помощью конопок и/или клавиатуры необходимое выражение</li>
+                  <li>В дополнительном поле ввода введите значение X для которого будет  расчитываться уравнение.</li>
+                  <li>Нажмите кнопку "="</li>
+                  <li>Программа отобразит результат вычисления или ошибку, если выражение или X неверны.</li>
+                </ol>
+                <strong>в режиме "GRAPH":</strong>
+                <ol>
+                  <li>Наберите с помощью конопок и/или клавиатуры необходимое выражение</li>
+                  <li>В дополнительных полях ввода введите начальные и конечные значения X и Y для которого будет расчитываться график.</li>
+                  <li>Нажмите кнопку "="</li>
+                  <li>Программа отобразит результат график в отдельном окне или выдаст ошибку, если введенные данные неверны.</li>
+                  </ol>
+                <strong>Требования к выражению и данным:</strong>
+                <ol>
+                  <li>Все скобки должны быть корректно открыты и закрыты</li>
+                  <li>Числа можно вводить как целые, так и с плавающей запятой</li>
+                  <li>Не допускается два знака операции подряд, исключение скобки.</li>
+                  <li>длина выражения должна быть менее 255 символов</li>
+                  <li>Область определения и область значения функции (X и Y) для графика от -1 000 000 до 1 000 000</li>
+                </ol>
+                <strong>Окно Истории:</strong>
+                <ul>
+                  <li>Для отображения/скрытия окна с историей нажмите кнопку "history" <br>
+                  внизу окна калькулятора или Нажав "H" на клавиатуре.</li>
+                  <li>В появившемся окне отобразится история введеных данных и результатов с <br>
+                  указанием режима работы</li>
+                  <li>Вы можете повторно заполнить поля данными из истории, нажав по соответсвующей
+                  строке в окне истории. Режим выберется автоматически в соответствии с
+                  выбранной строчкой.</li>
+                  <li>Вы можете очистить историю, нажав в окне истории кнопку "Clear History"</li>
+                </ul>
+                <strong>Окно Графика:</strong>
+                <ul>
+                  <li>В окне графика отображается разультат просчета, если нет ошибок во введенных данных.</li>
+                  <li>Для отображения/скрытия окна с графиком нажмите кнопку "graph"
+                      внизу окна калькулятора.</li>
+                  <li>Окно графика отображает адаптивную сетку в зависимости от указанной области
+                      определения и области значения.</li>
+                </ul>
+                <strong>Основные элементы окна графика:</strong>
+                <ol>
+                  <li>Сетка</li>
+                  <li>График</li>
+                  <li>Уравнение, область определения и область полученных значений вверху слева</li>
+                  <li>Масштаб графика по осям X и Y внизу справа</li>
+                  <li>Лого программы вверху справа</li>
+                </ol>
+
+          <a class="close" title="Закрыть" href="#close"></a>
+    </div>
         </button>
         <button class="notapbutton down history" id="historyButton">history</button>
         <button class="notapbutton down graph" id="graphButton">graph</button>
       </div>
     </div>
     <div class="graphWindow" id="graphWindow">
-      <img src="/static/img/background.png" class="graphImage" id="graphImage">
-      <button class="downGraph" id="downGraph">download graph</button>
-    </div>
+      <span id="graphSpan"><img src="/static/img/background.png" class="graphImage" id="graphImage"></span>
+      <button class="downGraph" id="downGraph">save graph</button>
     </div>
     
+    </div>
+  
     <script src="/static/js/main.js"></script>
     <script src="/static/js/history.js"></script>
   </body>

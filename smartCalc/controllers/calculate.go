@@ -38,7 +38,7 @@ func (c *CalculateController) Calculate() {
 func (c *CalculateController) removeTmpGraph(fileName string) {
 	if _, err := os.Stat(fileName); err == nil {
 		if os.Remove(fileName) != nil {
-			fmt.Println("Cannot remove tempfile")
+			t.Clg.Warning(fmt.Sprintf("Cannot remove tempfile"))
 		}
 	}
 }
@@ -54,19 +54,22 @@ func (c *CalculateController) Start() {
 
 	// c.TplName = "calculate/startCalculate.tpl"
 	c.TplName = "calculate/startCalculate.html"
+	t.Clg.Info("_Start_ \n\nRUN SESSION")
 
 	ws, err := upgrader.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil)
 	if err != nil {
+		t.Clg.Error(fmt.Sprintf("_Start_ Cannot setup WebSocket connection: %v\n", err))
 		log.Fatalf("Cannot setup WebSocket connection: %v\n", err)
 	}
 	defer ws.Close()
 
 	uname := "_" + fmt.Sprint(rand.Intn(6000))
 	tmpGraphImageName := d.Config.TempFileDir + "tempGraph" + uname + ".png"
+	t.Clg.Info(fmt.Sprintf("_Start_ uname = %s; tmpGraphImageName := %s", uname, tmpGraphImageName))
 	defer c.removeTmpGraph(tmpGraphImageName)
 
 	if err := ws.WriteMessage(1, []byte("5 "+uname)); err != nil {
-		log.Println("Write message error:", err)
+		t.Clg.Warning(fmt.Sprintf("_Start_ Write message error: %v", err))
 	}
 	
 	if err := ws.WriteMessage(1, loadHistoryFromModel()); err != nil {
@@ -79,21 +82,24 @@ func (c *CalculateController) Start() {
 		if err != nil {
 			return
 		}
-		fmt.Println("ws_text: ", string(text))
+		t.Clg.Info(fmt.Sprintf("_Start_ Message from user %s: %s", uname, string(text)))
 		input, er := c.cnv.UIToModel(string(text))
+		t.Clg.DeepDebug(fmt.Sprint("_Start_ input: ", input))
 		if er {
 			output = ("Error string")
 		} else {
 			modelsOutput := m.ModelCalc.GetCalcResult(input)
-
-			if modelsOutput.Mode == 2 && t.ExportImageToPng(modelsOutput.ModelGraphResult.GraphImage, tmpGraphImageName) != nil {
-				fmt.Println("cannot write tempGraph image to disk")
+			t.Clg.DeepDebug(fmt.Sprint("_Start_ modelsOutput After equation:", modelsOutput))
+			if modelsOutput.Mode == 2 && !modelsOutput.Err &&
+				t.ExportImageToPng(modelsOutput.ModelGraphResult.GraphImage, tmpGraphImageName) != nil {
+				t.Clg.Warning("_Start_ cannot write tempGraph image to disk")
 			}
 			output = (c.cnv.ModelToUI(modelsOutput))
 		}
-
+		t.Clg.Info(fmt.Sprintf("_Start_ Message To user%s: %s", uname, output))
 		if err := ws.WriteMessage(messageType, []byte(output)); err != nil {
-			log.Println("Write message error:", err)
+			t.Clg.Warning(fmt.Sprint("_Start_ Write message error:", err))
+
 			return
 		}
 

@@ -11,6 +11,7 @@ type Cfg struct {
 	WorkDir      string `json:"WorkDir"`      // Directory with programm
 	AssetsDir    string `json:"AssetsDir"`    // Directory with help.txt and type
 	LogDir       string `json:"LogDir"`       // Directory for log
+	LogFile      string `json:"LogFile"`      // LogFile name
 	TempFileDir  string `json:"TempFileDir"`  // Directory for Tempfile
 	TempGraph    string `json:"TempGraph"`    // tempfile name
 	HistoryFile  string `json:"HistoryFile"`  // historyfile path (with directory)
@@ -19,7 +20,7 @@ type Cfg struct {
 	DarkTheme    string `json:"DarkTheme"`    //Dark mode "yes" or "no"
 	IconPath     string `json:"IconPath"`     //iconfile name
 	TypePath     string `json:"TypePath"`     //Typefile name
-	Debug        bool   `json:"Debug"`        //debug mode with output additional info to terminal -  true or false
+	Debug        int    `json:"Debug"`        //debug mode with output additional info to terminal -  true or false
 }
 
 var (
@@ -32,7 +33,8 @@ var (
 	// [0] - main; [1] - optional
 	ConfigLinuxPath = []string{
 		"/etc/clevercalc/clevercalcLinux.cfg",
-		testDir + "/config/clevercalcLinuxTest.cfg"}
+		testDir + "/config/clevercalcLinuxTest.cfg",
+		"../conf/clevercalcLinuxTest.cfg"}
 
 	// Path for config in Mac system
 	// [0] - main; [1] - for test
@@ -41,6 +43,23 @@ var (
 		testDir + "/config/clevercalcMacOSTest.cfg"}
 
 	Config *Cfg = InitConfig("") // Handling config path by type config name in quotes (but this way not recommend)
+
+	NeccessoryFiles = []string{
+		Config.LogDir + Config.LogFile,
+		Config.HistoryFile,
+		Config.TempFileDir + Config.TempGraph,
+		Config.TypePath,
+		"./static/css/index_style.css",
+		"./static/css/startCalculate_style.css",
+		"./static/fonts/protosans56.ttf",
+		"./static/img/background.png",
+		"./static/img/backgroundMathw4.jpg",
+		"./static/js/main.js",
+		"./views/calculate/startCalculate.html",
+		"./views/calculate/startCalculate.tpl",
+		"./views/default/hello-sitepoint.tpl",
+		"./views/index.tpl",
+	}
 )
 
 // Create and write new config for Mac
@@ -49,7 +68,7 @@ func createNewMacConfig() *Cfg {
 
 	c.WorkDir = WD
 	c.AssetsDir = c.WorkDir + "/assets/"
-	c.LogDir = c.WorkDir + "/log/"
+	c.LogDir = c.WorkDir + "/logs/"
 	c.TempFileDir = c.WorkDir + "/static/tmp/"
 	c.TempGraph = "tempGraph.png"
 	c.HistoryFile = c.WorkDir + "/var/history.json"
@@ -58,7 +77,7 @@ func createNewMacConfig() *Cfg {
 	c.DarkTheme = "no"
 	c.IconPath = c.AssetsDir + "Icon.png"
 	c.TypePath = c.AssetsDir + "protosans56.ttf"
-	c.Debug = false
+	c.Debug = 4
 
 	fmt.Println("Create config with inner data")
 
@@ -71,7 +90,8 @@ func createNewLinuxConfig() *Cfg {
 
 	c.WorkDir = WD
 	c.AssetsDir = c.WorkDir + "/assets/"
-	c.LogDir = c.WorkDir + "/log/"
+	c.LogDir = c.WorkDir + "/logs/"
+	c.LogFile = "smartcalc.log"
 	c.TempFileDir = c.WorkDir + "/static/tmp/"
 	c.TempGraph = "tempGraph.png"
 	c.HistoryFile = c.WorkDir + "/var/history.json"
@@ -79,8 +99,8 @@ func createNewLinuxConfig() *Cfg {
 	c.YWindowGraph = 600
 	c.DarkTheme = "yes"
 	c.IconPath = c.AssetsDir + "Icon.png"
-	c.TypePath = c.AssetsDir + "protosans56.ttf"
-	c.Debug = false
+	c.TypePath = c.WorkDir + "/static/fonts/" + "protosans56.ttf"
+	c.Debug = 3
 
 	fmt.Println("Create config with inner data")
 
@@ -140,7 +160,7 @@ func InitConfig(fileName string) *Cfg {
 
 func testDirFind(WD string) string {
 	if len(WD) > 20 {
-		return WD[:len(WD)-19]
+		return WD[:len(WD)-6]
 	}
 	return WD
 }

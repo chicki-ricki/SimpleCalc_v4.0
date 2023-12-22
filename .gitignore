@@ -5,6 +5,11 @@ examples
 # bin files
 smartCalc/smartCalc
 
+#logs
+*.log
+history.json
+tempGraph*.png
+
 # temp files
 smartCalc/tmp/tempGraph*.png
 smartCalc/static/tmp/tempGraph*.png

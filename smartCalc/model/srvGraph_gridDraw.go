@@ -20,7 +20,7 @@ func (g *graphModel) graphGridDraw(img draw.Image) {
 	// Print vertical grid lines
 	for _, val := range arr {
 		if val == 0 {
-			t.DbgPrint(fmt.Sprint("g.graphGridFindX(0)=", g.graphGridFindValue(0, "X")))
+			t.Clg.DeepDebug(fmt.Sprint("_graphGridDraw_ g.graphGridFindX(0)=", g.graphGridFindValue(0, "X")))
 			g.arrowV(img, g.graphGridFindValue(0, "X"), 7, color.Gray{Y: uint8(0)})
 			g.drawVLine(img, 2, int(g.config.YWindowGraph)-20, g.graphGridFindValue(val, "X"), 10, color.Gray{Y: uint8(0)})
 		} else {
@@ -37,7 +37,7 @@ func (g *graphModel) graphGridDraw(img draw.Image) {
 	// Print vertical grid lines
 	for _, val := range arr {
 		if val == 0 {
-			t.DbgPrint(fmt.Sprint("g.graphGridFindY(0)=", g.graphGridFindValue(0, "Y")))
+			t.Clg.DeepDebug(fmt.Sprint("_graphGridDraw_ g.graphGridFindY(0)=", g.graphGridFindValue(0, "Y")))
 			g.drawHLine(img, 2, int(g.config.XWindowGraph)-20, 10, g.graphGridFindValue(val, "Y"), color.Gray{Y: uint8(0)})
 			g.arrowH(img, int(g.config.XWindowGraph)-7, g.graphGridFindValue(0, "Y"), color.Gray{Y: uint8(0)})
 		} else {
@@ -53,12 +53,12 @@ func (g *graphModel) graphGridDraw(img draw.Image) {
 // Drawing masshtab
 func (g *graphModel) masshtabDraw(img draw.Image, masshtabX, masshtabY float64, x0, y0 int) {
 	xLine := g.graphGridFindValue(g.xFrom+masshtabX, "X") - g.graphGridFindValue(g.xFrom, "X")
-	t.DbgPrint(fmt.Sprint("xLine for masshtab:", xLine))
+	t.Clg.DeepDebug(fmt.Sprint("_masshtabDraw_ xLine for masshtab:", xLine))
 	g.drawHLine(img, 3, int(xLine), x0-int(xLine)/2, y0, color.Gray{Y: uint8(0)})
 	g.drawEqualText(img, x0-20, y0+25, fmt.Sprint("X: ", masshtabX))
 
 	yLine := int(math.Abs(float64(g.graphGridFindValue(g.yFrom+masshtabY, "Y") - g.graphGridFindValue(g.yFrom, "Y"))))
-	t.DbgPrint(fmt.Sprint("yLine for masshtab:", yLine))
+	t.Clg.DeepDebug(fmt.Sprint("_masshtabDraw_ yLine for masshtab:", yLine))
 	g.drawVLine(img, 3, int(yLine), x0, y0-int(yLine), color.Gray{Y: uint8(0)})
 	g.drawEqualText(img, x0+10, y0+50-int(yLine), fmt.Sprint("Y: ", masshtabY))
 }
