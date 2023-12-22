@@ -64,4 +64,9 @@ function showClickHistoryButton(historyButtons, historyJson) {
           }
         });
     });
-}
+};
+
+function addHistory(lastHistory) {
+  let unit = document.createElement('div');
+  historyWindow.append(unit);
+};

@@ -105,11 +105,14 @@ socket.onmessage = function(event) {
     graphWindow.innerHTML = "<img src=\"" + urlgraph + "?dummy="+getRandomInRange(2, 500000)+"\" class=\"graphImage\" id=\"graphImage\"><button class=\"downGraph\" id=\"downGraph\">download graph</button>"
     // load history form history file
     case "9":
-      historyFromModel = event.data.slice(2);
-      historyJson = JSON.parse(historyFromModel);
+      historyJson = JSON.parse(event.data.slice(2));
       showHistory(historyJson);
       historyButtons = Array.from(document.getElementsByClassName("historyButtonsClass"));
       showClickHistoryButton(historyButtons, historyJson);
+    // addition history
+    case "8":
+      lastHistory = JSON.parse(event.data.slice(2));
+      addHistory(lastHistory);
   }
 }
 

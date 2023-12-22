@@ -18,13 +18,11 @@ import (
 
 type baseController struct {
 	beego.Controller // Embed struct that has stub implementation of the interface.
-	// i18n.Locate // For i18n usage when process data and render template.
 }
 
 type CalculateController struct {
 	baseController
 	cnv convert
-	// mod m.CalcModel
 }
 
 type MessageToUI struct {
@@ -52,12 +50,10 @@ func (c *CalculateController) Start() {
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
 		}
-		// historyPath = "./../var/history.json"
 	)
 
 	// c.TplName = "calculate/startCalculate.tpl"
 	c.TplName = "calculate/startCalculate.html"
-	// fmt.Println("start function are going")
 
 	ws, err := upgrader.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil)
 	if err != nil {
@@ -73,23 +69,17 @@ func (c *CalculateController) Start() {
 		log.Println("Write message error:", err)
 	}
 	
-	// historyFromModel := loadHistoryFromModel()
-	// if err := ws.WriteMessage(1, historyFromModel); err != nil {
-	// 	log.Println("Can not write data from model:", err)
-	// }
+	if err := ws.WriteMessage(1, loadHistoryFromModel()); err != nil {
+		log.Println("Can not write data from model:", err)
+	}
+
 	// Message receive loop.
 	for {
-		historyFromModel := loadHistoryFromModel()
-		if err := ws.WriteMessage(1, historyFromModel); err != nil {
-			log.Println("Can not write data from model:", err)
-		}
-
-
 		messageType, text, err := ws.ReadMessage()
 		if err != nil {
 			return
 		}
-		fmt.Println("ws: ", string(text))
+		fmt.Println("ws_text: ", string(text))
 		input, er := c.cnv.UIToModel(string(text))
 		if er {
 			output = ("Error string")
@@ -101,10 +91,15 @@ func (c *CalculateController) Start() {
 			}
 			output = (c.cnv.ModelToUI(modelsOutput))
 		}
+
 		if err := ws.WriteMessage(messageType, []byte(output)); err != nil {
 			log.Println("Write message error:", err)
 			return
 		}
+
+		// if err := ws.WriteMessage(1, lastHistory(input, output)); err != nil {
+		// 	log.Println("Can not write data from model:", err)
+		// }
 
 		// publish <- newEvent(models.EVENT_MESSAGE, uname, string(p))
 	}

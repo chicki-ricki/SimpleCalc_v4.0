@@ -4,5 +4,9 @@ examples
 
 # bin files
 smartCalc/smartCalc
-smartCalc/tmp/tempGraph.png
-smartCalc/var/history.json
+
+# temp files
+smartCalc/tmp/tempGraph*.png
+smartCalc/static/tmp/tempGraph*.png
+var/history.json
+model/var/history.json
