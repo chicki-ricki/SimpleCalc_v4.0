@@ -1,35 +1,44 @@
-function showHistory(historyJson) {
-    historyJson.forEach(item => {
-      let elem = document.createElement('div');
-      if (item.equation.length > 20) {
-        equationText = item.equation.slice(0,20)+"...";
+function showHistoryElem(jsonElem) {
+let elem = document.createElement('div');
+      if (jsonElem.equation.length > 20) {
+        equationText = jsonElem.equation.slice(0,20)+"...";
       } else {
-        equationText = item.equation;
+        equationText = jsonElem.equation;
       }
-      switch (item.mode) {
+      switch (jsonElem.mode) {
         case 'calc':
           elem.innerHTML = `
             <button class="historyButtonsClass"> 
-                ${item.mode}:   ${equationText} = ${item.result}
+                ${jsonElem.mode}:   ${equationText} = ${jsonElem.result}
             </button>
           `;
           break;
         case 'equal':
           elem.innerHTML = `
             <button class="historyButtonsClass"> 
-                ${item.mode}: {x=${item.xEqual}} ${equationText} = ${item.result}
+                ${jsonElem.mode}: {x=${jsonElem.xEqual}} ${equationText} = ${jsonElem.result}
             </button>
           `;
           break;
         case 'graph':
             elem.innerHTML = `
             <button class="historyButtonsClass"> 
-                ${item.mode}: X{${item.xFrom}...${item.xTo}} Y{${item.yFrom}...${item.yTo}}; y = ${equationText}
+                ${jsonElem.mode}: X{${jsonElem.xFrom}...${jsonElem.xTo}} Y{${jsonElem.yFrom}...${jsonElem.yTo}}; y = ${equationText}
             </button>
           `;
           break;            
       }
-      historyWindow.append(elem);
+      historyWindowData.append(elem);  
+}
+
+function addToHistory(lastHistoryElem) {
+  // alert("history js 8_: " + lastHistoryElem.equation);
+  showHistoryElem(lastHistoryElem);
+};
+
+function showHistory(historyJson) {
+    historyJson.forEach(item => {
+      showHistoryElem(item);
     });
 };
 
@@ -66,7 +75,23 @@ function showClickHistoryButton(historyButtons, historyJson) {
     });
 };
 
-function addHistory(lastHistory) {
-  let unit = document.createElement('div');
-  historyWindow.append(unit);
-};
+clearHistoryButton.addEventListener("click", (e) => {
+  // alert("click button");
+  try {
+    socket.send('clearHistory');
+  } catch (e) {
+  pole.innerText = "Socket error!";
+}
+});
+
+// function removeElement(el){
+//   // el.parentNode.parentNode.remove()
+//   // let element = document.getElementsByClassName("historyButtonsClass");
+//   el.parentNode.removeChild(element);
+// };
+
+// function showEmptyData() {
+//   historyButtons.forEach(hButton => {
+//     removeElement(hButton);
+//   });
+// };

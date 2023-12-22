@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	m "smartCalc/model"
+	t "smartCalc/tools"
 	// d "smartCalc/domains"
 )
 
@@ -17,36 +18,48 @@ func loadHistoryFromModel() []byte {
 	return ret
 }
 
-func lastHistory(input m.ModelsInput, output m.ModelsOutput) []byte {
-	// historyFromModel := m.ModelCalc.GetHistory()
-	// data, _ := json.MarshalIndent(historyFromModel, "", "    ")
-	// fmt.Println("lenght json:", len(data))
-	// fmt.Println("last elem in json:", string(data[len(data) - 1]))
+func lastHistory(input m.ModelsInput, output string) []byte {
+
+    /* 
+    {
+        "mode": "calc",
+        "equation": "6*9",
+        "result": "54",
+        "entrys": "",
+        "xEqual": "",
+        "xFrom": "",
+        "xTo": "",
+        "yFrom": "",
+        "yTo": ""
+    }
+	*/
 
 	strData := "8_"
-
-	fmt.Println("input.Mode: ", input.Mode);
+	outputs := strings.Fields(output)
 	switch input.Mode {
 	case 0:
-		fmt.Println("data calculate:", input.ModelEquationData.EqualValue)
-		strData += "{\"mode\":\"calc\"," + "\"equation\":\"" + input.ModelEquationData.EqualValue + "\"}"
+		strData += `{"mode":"calc","equation":"`
+		strData += input.ModelEquationData.EqualValue + "\","
+		strData += `"result":"`
+		strData += outputs[1] + "\","
+		strData += `"xEqual":"","xFrom":"","xTo":"","yFrom":"","yTo":""}`
 
 	case 1:
-		fmt.Println("data equal:", input.ModelEqualData)
+		t.Clg.Debug(fmt.Sprint("_lastHistory_ data equal input:", input.ModelEqualData))
+		t.Clg.Debug(fmt.Sprint("_lastHistory_ data equal output:", output))
 	case 2:
-		fmt.Println("data graph:", input.ModelGraphData)
+		t.Clg.Debug(fmt.Sprint("_lastHistory_ data graph input:", input.ModelEqualData))
+		t.Clg.Debug(fmt.Sprint("_lastHistory_ data graph output:", output))
 	}
-	fmt.Println("ret: ", strData)
-
-
+		t.Clg.Debug(fmt.Sprint("_lastHistory_ ret: ", strData))
 
 	ret := []byte(strData)
 	return ret
 }
 
-func historyParseAddition(input string) {
-	args := strings.Fields(input)
-	for _, arg := range args {
-		fmt.Println("arg: ", arg)
-	}
+func clearHistory() []byte {
+	m.ModelCalc.CleanHistory()
+	strData := "7_"
+	ret := []byte(strData)
+	return ret
 }

@@ -82,6 +82,13 @@ func (c *CalculateController) Start() {
 		if err != nil {
 			return
 		}
+		if string(text) == "clearHistory" {
+			// clearHistory()
+			if err := ws.WriteMessage(1, clearHistory()); err != nil {
+				t.Clg.Warning(fmt.Sprint("_Start_ Can not write clear hisory data:", err))
+			}
+			continue
+		}
 		t.Clg.Info(fmt.Sprintf("_Start_ Message from user %s: %s", uname, string(text)))
 		input, er := c.cnv.UIToModel(string(text))
 		t.Clg.DeepDebug(fmt.Sprint("_Start_ input: ", input))
@@ -103,9 +110,9 @@ func (c *CalculateController) Start() {
 			return
 		}
 
-		// if err := ws.WriteMessage(1, lastHistory(input, output)); err != nil {
-		// 	log.Println("Can not write data from model:", err)
-		// }
+		if err := ws.WriteMessage(1, lastHistory(input, output)); err != nil {
+			t.Clg.Warning(fmt.Sprint("_Start_ Can not write data from model:", err))
+		}
 
 		// publish <- newEvent(models.EVENT_MESSAGE, uname, string(p))
 	}

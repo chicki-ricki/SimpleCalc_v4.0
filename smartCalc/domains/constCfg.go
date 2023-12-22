@@ -69,6 +69,7 @@ func createNewMacConfig() *Cfg {
 	c.WorkDir = WD
 	c.AssetsDir = c.WorkDir + "/assets/"
 	c.LogDir = c.WorkDir + "/logs/"
+	c.LogFile = "smartCalc.log"
 	c.TempFileDir = c.WorkDir + "/static/tmp/"
 	c.TempGraph = "tempGraph.png"
 	c.HistoryFile = c.WorkDir + "/var/history.json"

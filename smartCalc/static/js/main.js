@@ -11,6 +11,8 @@ let
   buttonX = document.querySelector(".bigbutton")
   graphWindow = document.getElementById("graphWindow"),
   historyWindow = document.getElementById("historyWindow"),
+  historyWindowData = document.getElementById("historyWindowData"),
+  clearHistoryButton = document.getElementById("clearHistory"),
   // graphButton = document.getElementById("graphButton"),
   historyButtons = "",
 
@@ -100,22 +102,39 @@ socket.onmessage = function(event) {
       displaytext.innerText = event.data.slice(2);
       break;
     case "2":
-    displaytext.innerText = event.data.slice(2);
-    if (displaytext.innerText != "Error") {
-    graphWindow.style.display = "block";
-    graphSpan.innerHTML = "<img src=\"" + urlgraph + "?dummy="+getRandomInRange(2, 500000)+"\" class=\"graphImage\" id=\"graphImage\">"
-    fileDownload = displayEquation.innerText + "_" + getEntries(select, x, xFrom, xTo, yFrom, yTo, "_")
-    }
+      displaytext.innerText = event.data.slice(2);
+      if (displaytext.innerText != "Error") {
+        graphWindow.style.display = "block";
+        graphSpan.innerHTML = "<img src=\"" + urlgraph + "?dummy="+getRandomInRange(2, 500000)+"\" class=\"graphImage\" id=\"graphImage\">"
+        fileDownload = displayEquation.innerText + "_" + getEntries(select, x, xFrom, xTo, yFrom, yTo, "_")
+      };
+      break;
     // load history form history file
     case "9":
       historyJson = JSON.parse(event.data.slice(2));
       showHistory(historyJson);
       historyButtons = Array.from(document.getElementsByClassName("historyButtonsClass"));
       showClickHistoryButton(historyButtons, historyJson);
+      break;
     // addition history
     case "8":
-      lastHistory = JSON.parse(event.data.slice(2));
-      addHistory(lastHistory);
+      lastHistoryElem = JSON.parse(event.data.slice(2));
+      addToHistory(lastHistoryElem);
+      historyJson.push(lastHistoryElem);
+      historyButtons = Array.from(document.getElementsByClassName("historyButtonsClass"));
+      showClickHistoryButton(historyButtons, historyJson);
+      break;
+    case "7":
+      // alert("7_");
+      // emptyHistory = JSON.parse(event.data.slice(2));
+      // historyJson = "[]";
+      // alert("7_historyJson");
+      // showEmptyData(historyButtons);
+      historyWindowData.innerHTML = "";
+      // historyButtons.style.display = "none";
+      // showHistory(historyJson);
+      // historyButtons = Array.from(document.getElementsByClassName("historyButtonsClass"));
+      // showClickHistoryButton(historyButtons, historyJson);
   }
 }
 
