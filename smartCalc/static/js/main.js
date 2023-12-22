@@ -220,3 +220,27 @@ buttonX.addEventListener("click", (e) => {
     }
   }
 });
+
+// var div = document.getElementById('circle');
+// var listener = function(e) {
+//   div.style.left = e.pageX - 50 + "px";
+//   div.style.top = e.pageY - 50 + "px";
+// };
+
+// circle.addEventListener('mousedown', e => {
+//     document.addEventListener('mousemove', listener);
+// });
+
+// circle.addEventListener('mouseup', e => {
+//     document.removeEventListener('mousemove', listener);
+// });
+// .block1 {
+//   width: 100px;
+//   height: 100px;
+//   position: absolute;
+//   left: 50px;
+//   top: 50px;
+//   border-radius: 50%;
+//   background: blue;
+// }
+// <div class="block1" id="circle"></div>

@@ -54,7 +54,7 @@ var (
 		{"(0-2)", " ( 0 - 2 ) "},
 		{"(0-2)*3", " ( 0 - 2 )  * 3"},
 		{"(0-2)*((0-3))", " ( 0 - 2 )  *  (  ( 0 - 3 )  ) "},
-		{"0.66e+4+2e+2+300", "0.66e + 4 + 2e + 2 + 300"},
+		{"0.66e+4+2e+2+300", "0.66e+4 + 2e+2 + 300"},
 	}
 
 	testCasesPoland = []struct {
@@ -142,10 +142,10 @@ func TestOnlyCalculate(t *testing.T) {
 	if err == nil {
 		t.Errorf("Equations onlyCalculate incorrect - expected: err=|%v|; actual: err=|%v|", true, false)
 	}
-	er.equation = ("")
-	rez = 0
+	er.equation = ("42e-2*350")
+	rez = 147
 	rez, err = er.onlyCalculate(er.prepareString(er.equation))
-	if err == nil {
+	if err == nil && rez == 147 {
 		t.Errorf("Equations onlyCalculate incorrect - expected: err=|%v|; actual: err=|%v|", true, false)
 	}
 }

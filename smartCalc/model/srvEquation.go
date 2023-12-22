@@ -4,10 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	t "smartCalc/tools"
 	"strconv"
 	"strings"
 	"unicode"
+
+	t "smartCalc/tools"
 )
 
 type equationModel struct {
@@ -20,7 +21,8 @@ type equationModel struct {
 }
 
 func NewEquation(in ModelsInput) *equationModel {
-	t.DbgPrint(fmt.Sprint("NewEquation", in))
+	// t.DbgPrint(fmt.Sprint("NewEquation", in))
+	t.Clg.DeepDebug(fmt.Sprint("_NewEquation_ in=:", in))
 	return &equationModel{
 		equation: in.ModelEquationData.EqualValue,
 	}
@@ -40,9 +42,11 @@ func (e *equationModel) GetResult() (out ModelsOutput) {
 	out.ModelEquationResult.Mode = 0
 
 	if e.Checked, e.err = e.onlyCheck(); e.err != nil {
+		t.Clg.Info(fmt.Sprintf("_GetResult(Equation)_ fail check: %v", e.err))
 		return *e.setError(&out)
 	}
 	if e.Result, e.err = e.onlyCalculate(e.prepareString(e.Checked)); e.err != nil {
+		t.Clg.Info(fmt.Sprintf("_GetResult(Equation)_ fail calculate: %v", e.err))
 		return *e.setError(&out)
 	}
 	out.ModelEquationResult.ResultStr = strconv.FormatFloat(e.Result, 'f', -1, 64)
@@ -67,10 +71,13 @@ func (e *equationModel) onlyCheck() (string, error) {
 // calculate prepared string
 func (e *equationModel) onlyCalculate(str string) (rez float64, err error) {
 	if str != "" {
+		t.Clg.Debug(fmt.Sprintf("_onlyCalculate_ input string:|%s|", str))
 		if rez, err = e.startCalculate(str); err != nil {
+			t.Clg.Info(fmt.Sprintf("_onlyCalculate_ fail calculate: %v", err))
 			e.err = err
 		}
 	} else {
+		t.Clg.Info(fmt.Sprintf("_onlyCalculate_ fail calculate: Empty request"))
 		e.err = errors.New("Empty request")
 	}
 	return rez, e.err
@@ -141,19 +148,20 @@ func (e *equationModel) insertSpases(str string) string {
 		if char == ' ' {
 			continue
 		}
-		if strings.Contains(")(^+-*/", string(char)) {
+		if unicode.IsDigit(char) || unicode.IsLetter(char) || char == '.' || (len(retStr) > 1 && retStr[len(retStr)-1:] == "e") {
+			retStr += string(char)
+		} else if strings.Contains(")(^+-*/", string(char)) {
 			retStr += " " + string(char) + " "
 		} else if char == 'm' {
 			retStr += " " + string(char)
 		} else if char == 'd' {
 			retStr += string(char) + " "
-		} else if unicode.IsDigit(char) || unicode.IsLetter(char) || char == '.' || (len(retStr) > 1 && retStr[len(retStr)-1:] == "e") {
-			retStr += string(char)
 		} else {
 			retStr += string(char) + " "
 		}
+
 	}
-	// t.DbgPrint(fmt.Sprint("insertSpaces - after spaces added:", retStr))
+	t.Clg.DeepDebug(fmt.Sprint("_insertSpaces_ after spaces added:", retStr))
 
 	if string(retStr[0:1]) == "." && strings.Contains("0123456789", string(retStr[1:2])) {
 		retStr = fmt.Sprint("0" + retStr)
@@ -164,7 +172,7 @@ func (e *equationModel) insertSpases(str string) string {
 			retStr = fmt.Sprint(retStr[0:i+1] + "0" + string(retStr[i+1:]))
 		}
 	}
-	// t.DbgPrint(fmt.Sprint("insertSpaces - after zero added:", retStr))
+	t.Clg.DeepDebug(fmt.Sprint("_insertSpaces_ after zero added:", retStr))
 	return retStr
 }
 
