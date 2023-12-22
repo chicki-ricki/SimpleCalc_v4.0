@@ -32,6 +32,7 @@ yTo.value = 300;
 graphWindow.style.display = "none";
 historyWindow.style.display = "none";
 
+// Show or hide entryes according select
 function showEntries (select, equal, graph, equation) {
   switch (select.value) {
     case 'calculate':
@@ -51,6 +52,7 @@ function showEntries (select, equal, graph, equation) {
   } 
 }
 
+// Parsing entry values for create request
 function getEntries (select, x, xFrom, xTo, yFrom,yTo, space) {
   switch (select.value) {
     case 'calculate':
@@ -71,6 +73,7 @@ function getEntries (select, x, xFrom, xTo, yFrom,yTo, space) {
   return "";
 }
 
+// Get random int from MIN to MAX
 function getRandomInRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -95,7 +98,6 @@ socket.onmessage = function(event) {
     case "5":
       uname = event.data.slice(2);
       urlgraph = "/static/tmp/tempGraph" + uname + ".png"
-      // displaytext.innerText = uname;
       break;
     case "0":
     case "1":
@@ -131,11 +133,13 @@ socket.onmessage = function(event) {
   }
 }
 
+// Handle onclose event for socket
 socket.onclose = function() {
   //reconnect
  socket = new WebSocket("ws://localhost:8080/calculate/start");
 }
 
+// Run download by click on button
 function download(url, fileDownload) {
   const a = document.createElement('a')
   a.href = url
@@ -145,6 +149,7 @@ function download(url, fileDownload) {
   document.body.removeChild(a)
 }
 
+// Handle graph download button
 downGraph.addEventListener("click", (e) => {
   download(urlgraph, fileDownload)
 })
@@ -155,6 +160,7 @@ displaytext.addEventListener("click", (e) => {
       displaycopy.innerText = "copyed";
 });
 
+// Handle stanlart button
 function clickHandle(val, pole, entries) {
 switch (val) {
   case "<=":
@@ -206,6 +212,7 @@ switch (val) {
   }
 }
 
+// Handle history button
 historyButton.addEventListener("click", (e) => {
   if (historyWindow.style.display == "none") {
     historyWindow.style.display = "block"
@@ -214,6 +221,7 @@ historyButton.addEventListener("click", (e) => {
   }
 })
 
+// Handle Graph button
 graphButton.addEventListener("click", (e) => {
   if (graphWindow.style.display == "none") {
     graphWindow.style.display = "block"
@@ -233,6 +241,7 @@ buttons.map((button) => {
   });
 });
 
+// Handle X button
 buttonX.addEventListener("click", (e) => {
   if (select.value != "calculate") {
     if (displayEquation.innerText != "0") {
@@ -242,6 +251,48 @@ buttonX.addEventListener("click", (e) => {
     }
   }
 });
+
+var graph = document.getElementById('graphWindow');
+var listener1 = function(e) {
+  graph.style.left = e.pageX - 300 + "px";
+  graph.style.top = e.pageY - 50 + "px";
+};
+
+graphWindow.addEventListener('mousedown', e => {
+    document.addEventListener('mousemove', listener1);
+});
+
+graphWindow.addEventListener('mouseup', e => {
+    document.removeEventListener('mousemove', listener1);
+});
+
+var hist = document.getElementById('historyWindow');
+var listener2 = function(e) {
+  hist.style.left = e.pageX - 250 + "px";
+  hist.style.top = e.pageY - 50 + "px";
+};
+
+hist.addEventListener('mousedown', e => {
+    document.addEventListener('mousemove', listener2);
+});
+
+hist.addEventListener('mouseup', e => {
+    document.removeEventListener('mousemove', listener2);
+});
+
+var calc = document.getElementById('calculator');
+var listener3 = function(e) {
+  calc.style.left = e.pageX - 250 + "px";
+  calc.style.top = e.pageY - 50 + "px";
+};
+
+displ.addEventListener('mousedown', e => {
+    document.addEventListener('mousemove', listener3);
+}, false);
+
+displ.addEventListener('mouseup', e => {
+    document.removeEventListener('mousemove', listener3);
+}, false);
 
 // var div = document.getElementById('circle');
 // var listener = function(e) {

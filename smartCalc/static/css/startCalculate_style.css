@@ -23,7 +23,7 @@
 
   .historyWindow {
 	width: 500px;
-	/* height: 610px; */
+	height: 610px; 
 	background-color: rgba(50, 50, 50, 0.5);
 	/* margin: 150px auto; */
 	border-radius: 20px;
@@ -40,10 +40,13 @@
 	background-color: rgba(50, 50, 50, 0.5);
 	/* margin: 150px auto; */
 	border-radius: 20px;
-	padding: 10px;
+	padding: 20px;
 	box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
 	  rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-	  display: inline-block;
+	/* display: inline-block; */
+	position: absolute;
+	left: 50px;
+	top: 50px;
 	overflow: auto;
   }
 
@@ -56,7 +59,10 @@
 	padding: 10px;
 	box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
 	  rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-	  display: inline-block;
+	  /* display: inline-block; */
+	position: absolute;
+	left: 50px;
+	top: 50px;
   }
 
   .graphImage {
@@ -70,9 +76,12 @@
 	margin: 0px 3px; 
 	border-radius: 20px;
 	padding: 10px;
+	z-index: 10;
 	box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
 	  rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-
+	  position: absolute;
+	  left: auto;
+	  right: auto;
   }
   
   .display {
@@ -266,6 +275,7 @@
 	font-size: 15px;
 	border-radius: 5px;
 	background-color: #e7e7e7; color: black;
+	padding: 4px;
 	text-align: left;
   }
 
