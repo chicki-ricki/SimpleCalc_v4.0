@@ -12,7 +12,7 @@ import (
 
 type cLogs struct {
 	Level   int
-	logFile *os.File
+	LogFile *os.File
 	strChan *chan string
 
 	errorLog     *log.Logger
@@ -28,7 +28,7 @@ var Clg cLogs = *StartLogs(d.Config.LogDir + d.Config.LogFile)
 // defer lg.logFile.Close()
 
 func (lg *cLogs) Run() {
-	defer lg.logFile.Close()
+	defer lg.LogFile.Close()
 	for {
 
 	}
@@ -50,12 +50,12 @@ func StartLogs(logFileName string) *cLogs {
 
 	lg.Level = d.Config.Debug
 
-	if lg.logFile, err = os.OpenFile(logFileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777); err == nil {
-		lg.errorLog = log.New(lg.logFile, "ERROR\t", log.Ldate|log.Ltime)
-		lg.infoLog = log.New(lg.logFile, "INFO\t", log.Ldate|log.Ltime)
-		lg.warningLog = log.New(lg.logFile, "WARNING\t", log.Ldate|log.Ltime)
-		lg.debugLog = log.New(lg.logFile, "DEBUG\t", log.Ldate|log.Ltime)
-		lg.deepDebugLog = log.New(lg.logFile, "DEEPBUG\t", log.Ldate|log.Ltime)
+	if lg.LogFile, err = os.OpenFile(logFileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777); err == nil {
+		lg.errorLog = log.New(lg.LogFile, "ERROR\t", log.Ldate|log.Ltime)
+		lg.infoLog = log.New(lg.LogFile, "INFO\t", log.Ldate|log.Ltime)
+		lg.warningLog = log.New(lg.LogFile, "WARNING\t", log.Ldate|log.Ltime)
+		lg.debugLog = log.New(lg.LogFile, "DEBUG\t", log.Ldate|log.Ltime)
+		lg.deepDebugLog = log.New(lg.LogFile, "DEEPBUG\t", log.Ldate|log.Ltime)
 	} else {
 		fmt.Println("cannot open logfile: ", logFileName, "\n logs will be write to terminal")
 		lg.infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)

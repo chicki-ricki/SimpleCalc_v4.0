@@ -100,7 +100,7 @@ func createNewLinuxConfig() *Cfg {
 	c.DarkTheme = "yes"
 	c.IconPath = c.AssetsDir + "Icon.png"
 	c.TypePath = c.WorkDir + "/static/fonts/" + "protosans56.ttf"
-	c.Debug = 3
+	c.Debug = 5
 
 	fmt.Println("Create config with inner data")
 
