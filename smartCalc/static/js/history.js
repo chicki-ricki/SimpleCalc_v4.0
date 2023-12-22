@@ -31,11 +31,6 @@ let elem = document.createElement('div');
       historyWindowData.append(elem);  
 }
 
-function addToHistory(lastHistoryElem) {
-  // alert("history js 8_: " + lastHistoryElem.equation);
-  showHistoryElem(lastHistoryElem);
-};
-
 function showHistory(historyJson) {
     historyJson.forEach(item => {
       showHistoryElem(item);
@@ -76,22 +71,9 @@ function showClickHistoryButton(historyButtons, historyJson) {
 };
 
 clearHistoryButton.addEventListener("click", (e) => {
-  // alert("click button");
   try {
     socket.send('clearHistory');
   } catch (e) {
   pole.innerText = "Socket error!";
 }
 });
-
-// function removeElement(el){
-//   // el.parentNode.parentNode.remove()
-//   // let element = document.getElementsByClassName("historyButtonsClass");
-//   el.parentNode.removeChild(element);
-// };
-
-// function showEmptyData() {
-//   historyButtons.forEach(hButton => {
-//     removeElement(hButton);
-//   });
-// };

@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
 	m "smartCalc/model"
 	t "smartCalc/tools"
-	// d "smartCalc/domains"
 )
 
 func loadHistoryFromModel() []byte {
@@ -19,21 +19,6 @@ func loadHistoryFromModel() []byte {
 }
 
 func lastHistory(input m.ModelsInput, output string) []byte {
-
-    /* 
-    {
-        "mode": "calc",
-        "equation": "6*9",
-        "result": "54",
-        "entrys": "",
-        "xEqual": "",
-        "xFrom": "",
-        "xTo": "",
-        "yFrom": "",
-        "yTo": ""
-    }
-	*/
-
 	strData := "8_"
 	outputs := strings.Fields(output)
 	switch input.Mode {
@@ -45,13 +30,28 @@ func lastHistory(input m.ModelsInput, output string) []byte {
 		strData += `"xEqual":"","xFrom":"","xTo":"","yFrom":"","yTo":""}`
 
 	case 1:
-		t.Clg.Debug(fmt.Sprint("_lastHistory_ data equal input:", input.ModelEqualData))
-		t.Clg.Debug(fmt.Sprint("_lastHistory_ data equal output:", output))
+		strData += `{"mode":"equal","equation":"`
+		strData += input.ModelEqualData.EqualValue + "\","
+		strData += `"result":"`
+		strData += outputs[1] + "\","
+		strData += `"xEqual":"`
+		strData += input.ModelEqualData.XEqualStr + "\","
+		strData += `"xFrom":"","xTo":"","yFrom":"","yTo":""}`
 	case 2:
-		t.Clg.Debug(fmt.Sprint("_lastHistory_ data graph input:", input.ModelEqualData))
-		t.Clg.Debug(fmt.Sprint("_lastHistory_ data graph output:", output))
+		strData += `{"mode":"graph","equation":"`
+		strData += input.ModelGraphData.EqualValue + "\","
+		strData += `"result":"`
+		strData += outputs[1] + "\","
+		strData += `"xEqual":"","xFrom":"`
+		strData += input.ModelGraphData.XFromStr + "\","
+		strData += `"xTo":"`
+		strData += input.ModelGraphData.XToStr + "\","
+		strData += `"yFrom":"`
+		strData += input.ModelGraphData.YFromStr + "\","
+		strData += `"yTo":"`
+		strData += input.ModelGraphData.YToStr + "\"}"
 	}
-		t.Clg.Debug(fmt.Sprint("_lastHistory_ ret: ", strData))
+	t.Clg.Debug(fmt.Sprint("_lastHistory_ ret: ", strData))
 
 	ret := []byte(strData)
 	return ret

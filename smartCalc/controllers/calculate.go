@@ -71,7 +71,7 @@ func (c *CalculateController) Start() {
 	if err := ws.WriteMessage(1, []byte("5 "+uname)); err != nil {
 		t.Clg.Warning(fmt.Sprintf("_Start_ Write message error: %v", err))
 	}
-	
+
 	if err := ws.WriteMessage(1, loadHistoryFromModel()); err != nil {
 		log.Println("Can not write data from model:", err)
 	}

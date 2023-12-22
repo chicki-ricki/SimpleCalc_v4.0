@@ -119,22 +119,15 @@ socket.onmessage = function(event) {
     // addition history
     case "8":
       lastHistoryElem = JSON.parse(event.data.slice(2));
-      addToHistory(lastHistoryElem);
+      // addToHistory(lastHistoryElem);
+      showHistoryElem(lastHistoryElem);
       historyJson.push(lastHistoryElem);
       historyButtons = Array.from(document.getElementsByClassName("historyButtonsClass"));
       showClickHistoryButton(historyButtons, historyJson);
       break;
+    // clear history
     case "7":
-      // alert("7_");
-      // emptyHistory = JSON.parse(event.data.slice(2));
-      // historyJson = "[]";
-      // alert("7_historyJson");
-      // showEmptyData(historyButtons);
       historyWindowData.innerHTML = "";
-      // historyButtons.style.display = "none";
-      // showHistory(historyJson);
-      // historyButtons = Array.from(document.getElementsByClassName("historyButtonsClass"));
-      // showClickHistoryButton(historyButtons, historyJson);
   }
 }
 
