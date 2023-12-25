@@ -12,16 +12,14 @@ import (
 )
 
 type equationModel struct {
-	err      error
-	equation string
-	Checked  string
-	// prepared  string
+	err       error
+	equation  string
+	Checked   string
 	ResultStr string
 	Result    float64
 }
 
 func NewEquation(in ModelsInput) *equationModel {
-	// t.DbgPrint(fmt.Sprint("NewEquation", in))
 	t.Clg.DeepDebug(fmt.Sprint("_NewEquation_ in=:", in))
 	return &equationModel{
 		equation: in.ModelEquationData.EqualValue,
@@ -37,7 +35,6 @@ func (e *equationModel) setError(out *ModelsOutput) *ModelsOutput {
 
 // Implementing GetResult interface for equationModel
 func (e *equationModel) GetResult() (out ModelsOutput) {
-	// var rez calcViewResult
 	out.Mode = 0
 	out.ModelEquationResult.Mode = 0
 

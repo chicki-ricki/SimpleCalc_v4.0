@@ -137,13 +137,11 @@ func TestOnlyCalculate(t *testing.T) {
 		t.Errorf("Equations onlyCalculate incorrect - expected: rez=|%v|, err=|%v|; actual: rez=|%v|, err=|%v|", rez, err, rez, err)
 	}
 	er.equation = ("34-24/0")
-	// rez = 0
 	_, err = er.onlyCalculate(er.prepareString(er.equation))
 	if err == nil {
 		t.Errorf("Equations onlyCalculate incorrect - expected: err=|%v|; actual: err=|%v|", true, false)
 	}
 	er.equation = ("42e-2*350")
-	// rez = 147
 	rez, err = er.onlyCalculate(er.prepareString(er.equation))
 	if err == nil && rez == 147 {
 		t.Errorf("Equations onlyCalculate incorrect - expected: err=|%v|; actual: err=|%v|", true, false)
@@ -188,7 +186,6 @@ func TestToPolandNotation(t *testing.T) {
 	var er equationModel
 	for _, testCase := range testCasesPoland {
 		actual := er.toPolandNotation(testCase.val)
-		// if actual != testCase.expect {
 		if !reflect.DeepEqual(actual, testCase.expect) {
 			t.Errorf("Result was incorrect, expected: %v, actual: %v\n", testCase.expect, actual)
 		}
@@ -210,7 +207,6 @@ func TestCalculateEquation(t *testing.T) {
 func TestStartCalculate(t *testing.T) {
 	var er equationModel
 	for _, testCase := range testCasesStartCalculate {
-		// fmt.Println(testCase.val, " -> ", er.prepareString(testCase.val))
 		actual, err := er.startCalculate(er.prepareString(testCase.val))
 		if err == nil && actual != testCase.expect {
 			t.Errorf("Result was incorrect, expected: |%v|, actual: |%v|\n", testCase.expect, actual)

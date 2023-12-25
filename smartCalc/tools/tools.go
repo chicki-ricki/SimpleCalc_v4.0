@@ -13,7 +13,6 @@ import (
 type cLogs struct {
 	Level   int
 	LogFile *os.File
-	// strChan *chan string
 
 	errorLog     *log.Logger
 	infoLog      *log.Logger
@@ -24,8 +23,6 @@ type cLogs struct {
 }
 
 var Clg cLogs = *StartLogs(d.Config.LogDir + d.Config.LogFile)
-
-// defer lg.logFile.Close()
 
 // Init logging
 func StartLogs(logFileName string) *cLogs {
@@ -180,7 +177,6 @@ func WriteData(fileName string, data []byte) (err error) {
 	if err = os.WriteFile(fileName, data, 0777); err != nil { // write json([]byte) to file
 		Clg.Warning(fmt.Sprint("_WriteData_ Cannot write data to file: ", fileName))
 	}
-	// fd.Close()
 	return
 }
 

@@ -120,30 +120,3 @@ func BenchmarkGetResult(b *testing.B) {
 		})
 	}
 }
-
-// func TestCheckBrackets(t *testing.T) {
-// 	for _, testCase := range testCasesCheckBrackets {
-// 		actual := checkBrackets(testCase.val)
-// 		if actual != testCase.expect {
-// 			t.Errorf("Result was incorrect, expected: %v, actual: %v\n", testCase.expect, actual)
-// 		}
-// 	}
-// }
-
-// func TestStartCheck(t *testing.T) {
-// 	for _, testCase := range testCasesStartCheck {
-// 		actual, err := StartCheck(testCase.val)
-// 		if err == nil && actual != testCase.expect {
-// 			t.Errorf("Result was incorrect, expected: %v, actual: %v\n", testCase.expect, actual)
-// 		}
-// 	}
-// }
-
-// func TestCheckUnary(t *testing.T) {
-// 	for _, testCase := range testCasesCheckUnary {
-// 		actual := checkUnary(testCase.enter)
-// 		if actual != testCase.expect {
-// 			t.Errorf("Result was incorrect, expected: %v, actual: %v\n", testCase.expect, actual)
-// 		}
-// 	}
-// }

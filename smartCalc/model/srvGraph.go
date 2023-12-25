@@ -7,7 +7,6 @@ import (
 	"image/color"
 	"image/draw"
 	d "smartCalc/domains"
-	// t "smartCalc/tools"
 	"strconv"
 	"strings"
 )
@@ -105,9 +104,6 @@ func (g *graphModel) GetResult() (out ModelsOutput) {
 	out.ModelGraphResult.ResultStr = fmt.Sprintf("Y {%.2f .. %.2f}", g.gRM.yGraphMin, g.gRM.yGraphMax)
 
 	out.ModelGraphResult.GraphImage = g.gRM.graphImage
-	// if t.ExportImageToPng(g.gRM.graphImage, g.config.TempFileDir+g.config.TempGraph) != nil {
-	// 	return *g.setError(&out)
-	// }
 
 	return
 }

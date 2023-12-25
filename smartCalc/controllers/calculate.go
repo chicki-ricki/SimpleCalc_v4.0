@@ -9,8 +9,6 @@ import (
 	beego "github.com/beego/beego/v2/server/web"
 	"github.com/gorilla/websocket"
 
-	// d "smartCalc/domains"
-
 	d "smartCalc/domains"
 	m "smartCalc/model"
 	t "smartCalc/tools"
@@ -25,13 +23,7 @@ type CalculateController struct {
 	cnv convert
 }
 
-// type MessageToUI struct {
-// 	mode   int
-// 	result string
-// }
-
 func (c *CalculateController) Calculate() {
-	// c.TplName = "calculate/startCalculate.tpl"
 	c.TplName = "calculate/startCalculate.html"
 }
 
@@ -52,7 +44,6 @@ func (c *CalculateController) Start() {
 		}
 	)
 
-	// c.TplName = "calculate/startCalculate.tpl"
 	c.TplName = "calculate/startCalculate.html"
 	t.Clg.Info("_Start_ \n\nRUN SESSION")
 
@@ -135,7 +126,5 @@ func (c *CalculateController) Start() {
 		if err := ws.WriteMessage(1, lastHistory(input, output)); err != nil {
 			t.Clg.Warning(fmt.Sprint("_Start_ Can not write data from model:", err))
 		}
-
-		// publish <- newEvent(models.EVENT_MESSAGE, uname, string(p))
 	}
 }

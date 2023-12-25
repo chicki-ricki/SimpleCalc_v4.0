@@ -200,57 +200,6 @@ func (g *graphModel) graphGridFindValue(v0 float64, mode string) (Finded int) {
 	t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, Finded))
 	return
 
-	// switch mode {
-	// case "X":
-	// 	t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, Finded))
-	// 	return
-	// case "Y":
-	// 	if v0 == 0 && modeValue == 1 {
-	// 		t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, int(g.config.YWindowGraph)-Finded))
-	// 		return int(g.config.YWindowGraph) - Finded
-	// 	} else if v0 == 0 && modeValue == -1 {
-	// 		t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, 0-Finded))
-	// 		return 0 - Finded
-	// 	}
-	// 	return int(g.config.YWindowGraph) - Finded
-	// default:
-	// 	return 0
-	// }
-
-	// t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, modeValue: |%d|", mode, modeValue))
-	// if v0 == 0 && modeValue != 0 {
-	// 	switch modeValue {
-	// 	case -1:
-	// 		Finded = int((0 - arr[len(arr)-1]) / deltaValue)
-	// 	case 1:
-	// 		Finded = int(0 - arr[0]/deltaValue)
-	// 	}
-	// } else {
-	// 	var tempDelta float64 = 2000000
-	// 	for i, val := range arr {
-	// 		if math.Abs(v0-val) < tempDelta {
-	// 			tempDelta = math.Abs(v0 - val)
-	// 			Finded = i
-	// 		}
-	// 	}
-	// }
-
-	// switch mode {
-	// case "X":
-	// 	t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, Finded))
-	// 	return
-	// case "Y":
-	// 	if v0 == 0 && modeValue == 1 {
-	// 		t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, int(g.config.YWindowGraph)-Finded))
-	// 		return int(g.config.YWindowGraph) - Finded
-	// 	} else if v0 == 0 && modeValue == -1 {
-	// 		t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, 0-Finded))
-	// 		return 0 - Finded
-	// 	}
-	// 	return int(g.config.YWindowGraph) - Finded
-	// default:
-	// 	return 0
-	// }
 }
 
 // formatting Grid value for print

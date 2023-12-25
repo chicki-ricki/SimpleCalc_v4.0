@@ -10,7 +10,6 @@ func (g *graphModel) graphPrepareString() bool {
 	if str, err := g.equal.equation.onlyCheck(); err != nil {
 		return true
 	} else {
-		// g.preparedEquation = str
 		g.preparedEquation = g.equal.addStaplesForX(str)
 	}
 	return false

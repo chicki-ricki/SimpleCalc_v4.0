@@ -126,7 +126,6 @@ func readConfig(fileName string, c *Cfg) error {
 func InitConfig(fileName string) *Cfg {
 	var c Cfg
 
-	// fmt.Println(WD)
 	// Try load config from handle path
 	if fileName != "" {
 		if err := readConfig(fileName, &c); err == nil {

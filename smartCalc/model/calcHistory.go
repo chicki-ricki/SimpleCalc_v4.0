@@ -8,8 +8,6 @@ import (
 	t "smartCalc/tools"
 )
 
-// const FILENAME string = "history.json"
-
 type calcHistory struct {
 	config          d.Cfg
 	fileName        string

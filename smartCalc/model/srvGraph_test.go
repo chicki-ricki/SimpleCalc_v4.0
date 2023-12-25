@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	// "image/draw"
 	"math"
 	"reflect"
 	"testing"
@@ -37,7 +36,6 @@ var (
 		err    bool
 		outErr bool
 	}{
-		// {[]string{"", "5", "6", "7", "8"}, []string{"", "5", "6", "7", "8"}, false, true},
 		{[]string{"34-23x(/2", "5", "6", "7", "8"}, []string{"34-23x(/2", "5", "6", "7", "8"}, false, true},
 		{[]string{"34-23x/2", "5", "6", "7", "8"}, []string{"34-23x/2", "5", "6", "7", "8"}, false, false},
 		{[]string{"34-23x/2", "0", "0", "7", "8"}, []string{"34-23x/2", "0", "0", "7", "8"}, true, true},
@@ -160,20 +158,6 @@ var (
 		{[]float64{0.01, 0.03}, 0.002},
 	}
 
-	// testCasesCheckSideModeArrowY = []struct {
-	// 	enter  []float64
-	// 	expect bool
-	// }{
-	// 	{[]float64{10, 100}, true},
-	// 	{[]float64{500, 1500}, true},
-	// 	{[]float64{2, 3}, true},
-	// 	{[]float64{0.1, 0.2}, true},
-	// 	{[]float64{-0.01, 0.03}, false},
-	// 	{[]float64{-10, 10}, false},
-	// 	{[]float64{-3, 1}, false},
-	// 	{[]float64{-30, 2}, true},
-	// }
-
 	testCasesCheckSideModeArrow = []struct {
 		enter  []float64
 		size   int
@@ -216,14 +200,6 @@ var (
 		{[]float64{10, 100, 15}, "X", 33},
 		{[]float64{-10, 900, 45}, "X", 36},
 	}
-
-	// testCasesGraphGridDraw = []struct {
-	// 	enter  []string
-	// 	expect string
-	// 	b      bool
-	// }{
-	// 	{[]string{"x^(2)/500", "-500", "300", "-30", "3000"}, TestPath + "/x^2_500_-500_300_-30_3000 .png", true},
-	// }
 
 	testCasesDrawHLine = []struct {
 		enter  []int
@@ -341,14 +317,6 @@ func CompareImage(img1, img2 image.Image) bool {
 	}
 	return true
 }
-
-// func fillBackground(img draw.Image, c color.Color) {
-// 	for x := 0; x < int(configCalc.XWindowGraph); x++ {
-// 		for y := 0; y < int(configCalc.YWindowGraph); y++ {
-// 			img.Set(x, y, c)
-// 		}
-// 	}
-// }
 
 //---------- New object and interface implementing
 

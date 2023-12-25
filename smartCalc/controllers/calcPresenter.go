@@ -3,11 +3,9 @@ package controllers
 import (
 	d "smartCalc/domains"
 	m "smartCalc/model"
-	// "fyne.io/fyne/v2"
 )
 
 type View interface {
-	// SetLink(*chan string)
 	GetUIData() interface{}
 	DisplayResult(interface{})
 	UpdateHistory([]d.HistoryItem)
@@ -18,12 +16,6 @@ type Model interface {
 	GetCalcResult(m.ModelsInput) m.ModelsOutput
 	CleanHistory()
 }
-
-// type errStruct struct {
-// 	Err       bool
-// 	mode      int
-// 	resultStr string
-// }
 
 // presenters structure
 type presenter struct {

@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-// const FILENAME string = "history.json"
-
 type convert struct {
 }
 
