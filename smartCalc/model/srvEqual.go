@@ -9,14 +9,14 @@ import (
 )
 
 type equalModel struct {
-	err         error
+	// err         error
 	equalString string
-	prepared    string
-	xEqualStr   string
-	resultStr   string
-	xEqual      float64
-	result      float64
-	equation    equationModel
+	// prepared    string
+	xEqualStr string
+	// resultStr   string
+	xEqual   float64
+	result   float64
+	equation equationModel
 }
 
 func NewEqual(in ModelsInput) *equalModel {

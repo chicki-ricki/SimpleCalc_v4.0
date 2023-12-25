@@ -126,6 +126,7 @@ socket.onmessage = function(event) {
       historyJson.push(lastHistoryElem);
       historyButtons = Array.from(document.getElementsByClassName("historyButtonsClass"));
       showClickHistoryButton(historyButtons, historyJson);
+      historyWindowData.scrollTop = historyWindowData.scrollHeight
       break;
     // clear history
     case "7":
@@ -160,7 +161,7 @@ displaytext.addEventListener("click", (e) => {
       displaycopy.innerText = "copyed";
 });
 
-// Handle stanlart button
+// Handle standart button
 function clickHandle(val, pole, entries) {
 switch (val) {
   case "<=":
@@ -194,6 +195,18 @@ switch (val) {
   case "log":
   case "sqrt":
   case "mod":
+    // pole.innerText = pole.innerText.substr(pole.innerText.length-1)
+    if ((!isNaN(pole.innerText.substr(pole.innerText.length-1)) || 
+    pole.innerText.substr(pole.innerText.length-1) == "x") && 
+    pole.innerText != "0") {
+      // pole.innerText = pole.innerText.substr(pole.innerText.length-1)
+      pole.innerText += "*" + val + "(";
+    } else if (pole.innerText != "0") {
+      pole.innerText += val + "(";
+    } else if (pole.innerText == "0") {
+      pole.innerText = val + "(";
+    }
+    break;
   case "^":
     if (pole.innerText != "0") {
     pole.innerText += val + "(";
@@ -216,6 +229,7 @@ switch (val) {
 historyButton.addEventListener("click", (e) => {
   if (historyWindow.style.display == "none") {
     historyWindow.style.display = "block"
+    historyWindowData.scrollTop = historyWindowData.scrollHeight
   } else {
     historyWindow.style.display = "none"
   }
@@ -252,68 +266,48 @@ buttonX.addEventListener("click", (e) => {
   }
 });
 
+// Flying graph window
 var graph = document.getElementById('graphWindow');
 var listener1 = function(e) {
   graph.style.left = e.pageX - 300 + "px";
   graph.style.top = e.pageY - 50 + "px";
 };
-
+// Capture graph window
 graphWindow.addEventListener('mousedown', e => {
     document.addEventListener('mousemove', listener1);
 });
-
+// move graph window
 graphWindow.addEventListener('mouseup', e => {
     document.removeEventListener('mousemove', listener1);
 });
 
+// Flying history window
 var hist = document.getElementById('historyWindow');
 var listener2 = function(e) {
   hist.style.left = e.pageX - 250 + "px";
   hist.style.top = e.pageY - 50 + "px";
 };
 
+// capture history window
 hist.addEventListener('mousedown', e => {
     document.addEventListener('mousemove', listener2);
 });
-
+// move history window
 hist.addEventListener('mouseup', e => {
     document.removeEventListener('mousemove', listener2);
 });
 
+// Flying main calculator window
 var calc = document.getElementById('calculator');
 var listener3 = function(e) {
   calc.style.left = e.pageX - 250 + "px";
   calc.style.top = e.pageY - 50 + "px";
 };
-
+// capture calculator window
 displ.addEventListener('mousedown', e => {
     document.addEventListener('mousemove', listener3);
 }, false);
-
+// move calculator window
 displ.addEventListener('mouseup', e => {
     document.removeEventListener('mousemove', listener3);
 }, false);
-
-// var div = document.getElementById('circle');
-// var listener = function(e) {
-//   div.style.left = e.pageX - 50 + "px";
-//   div.style.top = e.pageY - 50 + "px";
-// };
-
-// circle.addEventListener('mousedown', e => {
-//     document.addEventListener('mousemove', listener);
-// });
-
-// circle.addEventListener('mouseup', e => {
-//     document.removeEventListener('mousemove', listener);
-// });
-// .block1 {
-//   width: 100px;
-//   height: 100px;
-//   position: absolute;
-//   left: 50px;
-//   top: 50px;
-//   border-radius: 50%;
-//   background: blue;
-// }
-// <div class="block1" id="circle"></div>

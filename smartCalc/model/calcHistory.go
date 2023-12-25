@@ -3,9 +3,9 @@ package model
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	d "smartCalc/domains"
+	t "smartCalc/tools"
 )
 
 // const FILENAME string = "history.json"
@@ -118,26 +118,27 @@ func (h *calcHistory) createHistoryJson() (data []byte) {
 
 // writing entire history base to file
 func (h *calcHistory) writeHistoryJson(data []byte) {
-	historyFd, err := os.OpenFile(h.fileName, os.O_CREATE|os.O_WRONLY, 0777)
+	err := os.WriteFile(h.fileName, data, 0777) // write json([]byte) to file
 	if err != nil {
-		log.Fatal(err)
+		t.Clg.Error(fmt.Sprintf("Can't write history to file %s, %v", h.fileName, err))
 	}
-	err = os.WriteFile(h.fileName, data, 0777) // write json([]byte) to file
-	historyFd.Close()
 }
 
 // reading entire history from file
 func readHistoryJson(fileName string) (hdata []d.HistoryItem) {
 
-	historyFd, err := os.OpenFile(fileName, os.O_CREATE|os.O_RDONLY, 0777)
-	if err != nil {
-		log.Fatal(err)
-	}
 	dataFromFile, err := os.ReadFile(fileName)
-	err = json.Unmarshal(dataFromFile, &hdata)
+	if err != nil {
+		t.Clg.Error(fmt.Sprintf("Can't read history from file %s, %v", fileName, err))
+		return
+	}
 
-	historyFd.Close()
-	return hdata
+	err = json.Unmarshal(dataFromFile, &hdata)
+	if err != nil {
+		t.Clg.Error("Can't unmarshall history json")
+	}
+
+	return
 }
 
 //----------------------------------------Handle history END

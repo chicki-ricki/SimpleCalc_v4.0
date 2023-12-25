@@ -82,17 +82,17 @@ func (c *convert) UIToModel(in string) (m.ModelsInput, bool) {
 
 	switch inArray[0] {
 	case "calculate":
-		t.Clg.DeepDebug(fmt.Sprint("_UIToModel_ Choice Calculate"))
+		t.Clg.DeepDebug("_UIToModel_ Choice Calculate")
 		if len(inArray) == 2 {
 			return c.copyEquationForModel(inArray)
 		}
 	case "equal":
-		t.Clg.DeepDebug(fmt.Sprint("_UIToModel_ Choice Equal"))
+		t.Clg.DeepDebug("_UIToModel_ Choice Equal")
 		if len(inArray) == 3 {
 			return c.copyEqualForModel(inArray)
 		}
 	case "graph":
-		t.Clg.DeepDebug(fmt.Sprint("_UIToModel_ Choice Graph"))
+		t.Clg.DeepDebug("_UIToModel_ Choice Graph")
 		if len(inArray) == 6 {
 			return c.copyGraphForModel(inArray)
 		}

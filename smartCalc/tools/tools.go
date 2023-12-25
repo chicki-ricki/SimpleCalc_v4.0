@@ -13,7 +13,7 @@ import (
 type cLogs struct {
 	Level   int
 	LogFile *os.File
-	strChan *chan string
+	// strChan *chan string
 
 	errorLog     *log.Logger
 	infoLog      *log.Logger
@@ -26,13 +26,6 @@ type cLogs struct {
 var Clg cLogs = *StartLogs(d.Config.LogDir + d.Config.LogFile)
 
 // defer lg.logFile.Close()
-
-func (lg *cLogs) Run() {
-	defer lg.LogFile.Close()
-	for {
-
-	}
-}
 
 // Init logging
 func StartLogs(logFileName string) *cLogs {
@@ -149,14 +142,14 @@ func FileCheck(files []string) {
 func LoadImage(fileName string) (im image.Image, err error) {
 
 	fd, err := os.Open(fileName)
-	Clg.Debug(fmt.Sprint("_LoadImage_ OPEN File in LoadImage"))
+	Clg.Debug("_LoadImage_ OPEN File in LoadImage")
 	if err != nil {
 		Clg.Warning(fmt.Sprint(err))
 		return
 	}
 
 	im, err = png.Decode(fd)
-	Clg.Debug(fmt.Sprint("_LoadImage_ DECODE file in LoadImage"))
+	Clg.Debug("_LoadImage_ DECODE file in LoadImage")
 	if err != nil {
 		Clg.Warning(fmt.Sprint("_LoadImage_ ", err))
 		return

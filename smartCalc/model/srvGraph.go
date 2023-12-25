@@ -132,5 +132,4 @@ func (g *graphModel) graphImageBuild() {
 
 	// Draw Logo to image
 	g.drawLogo(g.gRM.graphImage, 21, "CleverCalc")
-	return
 }

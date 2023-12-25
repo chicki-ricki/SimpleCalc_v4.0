@@ -19,15 +19,15 @@ type Model interface {
 	CleanHistory()
 }
 
-type errStruct struct {
-	Err       bool
-	mode      int
-	resultStr string
-}
+// type errStruct struct {
+// 	Err       bool
+// 	mode      int
+// 	resultStr string
+// }
 
 // presenters structure
 type presenter struct {
-	cnv             convert
+	// cnv             convert
 	ViewDataChannel chan string
 }
 

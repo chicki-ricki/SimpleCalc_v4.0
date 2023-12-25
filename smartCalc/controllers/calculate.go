@@ -25,10 +25,10 @@ type CalculateController struct {
 	cnv convert
 }
 
-type MessageToUI struct {
-	mode   int
-	result string
-}
+// type MessageToUI struct {
+// 	mode   int
+// 	result string
+// }
 
 func (c *CalculateController) Calculate() {
 	// c.TplName = "calculate/startCalculate.tpl"
@@ -38,7 +38,7 @@ func (c *CalculateController) Calculate() {
 func (c *CalculateController) removeTmpGraph(fileName string) {
 	if _, err := os.Stat(fileName); err == nil {
 		if os.Remove(fileName) != nil {
-			t.Clg.Warning(fmt.Sprintf("Cannot remove tempfile"))
+			t.Clg.Warning("Cannot remove tempfile")
 		}
 	}
 }
@@ -63,53 +63,75 @@ func (c *CalculateController) Start() {
 	}
 	defer ws.Close()
 
+	//Create user name
 	uname := "_" + fmt.Sprint(rand.Intn(6000))
+
+	// Compose temp graph file name for user
 	tmpGraphImageName := d.Config.TempFileDir + "tempGraph" + uname + ".png"
 	t.Clg.Info(fmt.Sprintf("_Start_ uname = %s; tmpGraphImageName := %s", uname, tmpGraphImageName))
+
+	// Remove temp graph file after session
 	defer c.removeTmpGraph(tmpGraphImageName)
 
+	// Send User name to UI via ws
 	if err := ws.WriteMessage(1, []byte("5 "+uname)); err != nil {
 		t.Clg.Warning(fmt.Sprintf("_Start_ Write message error: %v", err))
 	}
 
+	// First load history from model
 	if err := ws.WriteMessage(1, loadHistoryFromModel()); err != nil {
 		log.Println("Can not write data from model:", err)
 	}
 
-	// Message receive loop.
+	// Message receive loop
 	for {
+		// Waiting message from user
 		messageType, text, err := ws.ReadMessage()
 		if err != nil {
 			return
 		}
+
+		// Handle clearHistory command case
 		if string(text) == "clearHistory" {
-			// clearHistory()
 			if err := ws.WriteMessage(1, clearHistory()); err != nil {
 				t.Clg.Warning(fmt.Sprint("_Start_ Can not write clear hisory data:", err))
+			} else {
+				t.Clg.Info(fmt.Sprintf("_Start_ Command from user %s: ClearHistory - success", uname))
 			}
 			continue
 		}
+
 		t.Clg.Info(fmt.Sprintf("_Start_ Message from user %s: %s", uname, string(text)))
+
+		// Convert message to input modeldata
 		input, er := c.cnv.UIToModel(string(text))
 		t.Clg.DeepDebug(fmt.Sprint("_Start_ input: ", input))
 		if er {
 			output = ("Error string")
 		} else {
+			//request to Model for result
 			modelsOutput := m.ModelCalc.GetCalcResult(input)
 			t.Clg.DeepDebug(fmt.Sprint("_Start_ modelsOutput After equation:", modelsOutput))
+
+			// write graph image to file with users name
 			if modelsOutput.Mode == 2 && !modelsOutput.Err &&
 				t.ExportImageToPng(modelsOutput.ModelGraphResult.GraphImage, tmpGraphImageName) != nil {
 				t.Clg.Warning("_Start_ cannot write tempGraph image to disk")
 			}
+
+			// Convert ModelsOutput to stringresult for UI
 			output = (c.cnv.ModelToUI(modelsOutput))
 		}
-		t.Clg.Info(fmt.Sprintf("_Start_ Message To user%s: %s", uname, output))
-		if err := ws.WriteMessage(messageType, []byte(output)); err != nil {
-			t.Clg.Warning(fmt.Sprint("_Start_ Write message error:", err))
 
+		// Send Result to UI
+		if err := ws.WriteMessage(messageType, []byte(output)); err != nil {
+			t.Clg.Warning(fmt.Sprintf("_Start_ Write message To user%serror:", err))
 			return
+		} else {
+			t.Clg.Info(fmt.Sprintf("_Start_ Message To user%s: %s", uname, output))
 		}
 
+		// Create and send curent history item to UI
 		if err := ws.WriteMessage(1, lastHistory(input, output)); err != nil {
 			t.Clg.Warning(fmt.Sprint("_Start_ Can not write data from model:", err))
 		}

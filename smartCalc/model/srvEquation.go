@@ -12,10 +12,10 @@ import (
 )
 
 type equationModel struct {
-	err       error
-	equation  string
-	Checked   string
-	prepared  string
+	err      error
+	equation string
+	Checked  string
+	// prepared  string
 	ResultStr string
 	Result    float64
 }
@@ -77,7 +77,7 @@ func (e *equationModel) onlyCalculate(str string) (rez float64, err error) {
 			e.err = err
 		}
 	} else {
-		t.Clg.Info(fmt.Sprintf("_onlyCalculate_ fail calculate: Empty request"))
+		t.Clg.Info("_onlyCalculate_ fail calculate: Empty request")
 		e.err = errors.New("Empty request")
 	}
 	return rez, e.err
@@ -144,6 +144,8 @@ func (e *equationModel) replaceUnary(str string) string {
 func (e *equationModel) insertSpases(str string) string {
 	var retStr string
 	s := strings.ToLower(str)
+
+	// Insert space beetwin elems
 	for _, char := range s {
 		if char == ' ' {
 			continue
@@ -163,10 +165,11 @@ func (e *equationModel) insertSpases(str string) string {
 	}
 	t.Clg.DeepDebug(fmt.Sprint("_insertSpaces_ after spaces added:", retStr))
 
+	// Insert zero before dot in the begining
 	if string(retStr[0:1]) == "." && strings.Contains("0123456789", string(retStr[1:2])) {
 		retStr = fmt.Sprint("0" + retStr)
 	}
-
+	// Insert zero before dot in the middle
 	for i := 0; i < len(retStr)-2; i++ {
 		if string(retStr[i:i+1]) == " " && string(retStr[i+1:i+2]) == "." && strings.Contains("0123456789", string(retStr[i+2:i+3])) {
 			retStr = fmt.Sprint(retStr[0:i+1] + "0" + string(retStr[i+1:]))
@@ -268,11 +271,15 @@ func (e *equationModel) calculate(expression []string) (float64, error) {
 	var stack []float64
 	var err error = nil
 
-	for _, val := range expression {
+	t.Clg.DeepDebug(fmt.Sprint("_calculate_  expression:", expression))
+	for i, val := range expression {
+		t.Clg.DeepDebug(fmt.Sprintf("_calculate_  expression i = %d, val = %s", i, val))
 		var temp float64
 		if strings.Contains(operators, val) {
+			t.Clg.DeepDebug(fmt.Sprintf("_calculate_  contains %s in operators", val))
 			if len(stack) < 2 {
 				if strings.Contains(unaryop, val) {
+					t.Clg.DeepDebug(fmt.Sprintf("_calculate_ stack unary up=%v", stack))
 					lenght := len(stack)
 					n1 := stack[lenght-1]
 					stack = stack[:lenght-1]
@@ -328,22 +335,22 @@ func (e *equationModel) calculate(expression []string) (float64, error) {
 				temp = n2 / n1
 			case val == "cos":
 				stack = append(stack, n2)
-				temp = math.Cos(n1)
+				temp = math.Cos(n1 * math.Pi / 180)
 			case val == "sin":
 				stack = append(stack, n2)
-				temp = math.Sin(n1)
+				temp = math.Sin(n1 * math.Pi / 180)
 			case val == "tan":
 				stack = append(stack, n2)
-				temp = math.Tan(n1)
+				temp = math.Tan(n1 * math.Pi / 180)
 			case val == "acos":
 				stack = append(stack, n2)
-				temp = math.Acos(n1)
+				temp = math.Acos(n1) * 180 / math.Pi
 			case val == "asin":
 				stack = append(stack, n2)
-				temp = math.Asin(n1)
+				temp = math.Asin(n1) * 180 / math.Pi
 			case val == "atan":
 				stack = append(stack, n2)
-				temp = math.Atan(n1)
+				temp = math.Atan(n1) * 180 / math.Pi
 			case val == "sqrt":
 				stack = append(stack, n2)
 				temp = math.Sqrt(n1)
@@ -355,11 +362,13 @@ func (e *equationModel) calculate(expression []string) (float64, error) {
 				temp = math.Log10(n1)
 			}
 			stack = append(stack, temp)
+			t.Clg.DeepDebug(fmt.Sprintf("_calculate_ stack=%v", stack))
 		} else {
 			if num, err := strconv.ParseFloat(val, 64); err == nil {
 				stack = append(stack, num)
 			} else {
 				err = fmt.Errorf("Error in strconv: %v", err)
+				return float64(0), err
 			}
 		}
 	}
