@@ -117,11 +117,11 @@ func (h *calcHistory) createHistoryJson() (data []byte) {
 }
 
 // writing entire history base to file
-func (h *calcHistory) writeHistoryJson(data []byte) {
-	err := os.WriteFile(h.fileName, data, 0777) // write json([]byte) to file
-	if err != nil {
+func (h *calcHistory) writeHistoryJson(data []byte) (err error) {
+	if err = os.WriteFile(h.fileName, data, 0777); err != nil {
 		t.Clg.Error(fmt.Sprintf("Can't write history to file %s, %v", h.fileName, err))
 	}
+	return
 }
 
 // reading entire history from file

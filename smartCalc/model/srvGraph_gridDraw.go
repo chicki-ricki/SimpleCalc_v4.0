@@ -136,7 +136,7 @@ func (g *graphModel) findGridValue(masshtab, from, to float64) (arr []float64) {
 // finding masshtab for grid
 func (g *graphModel) findMasshtab(min, max float64) float64 {
 	volume := math.Abs(max - min)
-	for x := 0.01; x <= 10000000; x *= 10 {
+	for x := 0.01; x <= 1000000; x *= 10 {
 		if volume/x < 10 && volume/x >= 5 {
 			return x
 		} else if volume/x < 5 && volume/x >= 2 {
@@ -146,12 +146,12 @@ func (g *graphModel) findMasshtab(min, max float64) float64 {
 		}
 	}
 
-	return 10000000
+	return 1000000
 }
 
 // finding pixel place for value X or Y
 func (g *graphModel) graphGridFindValue(v0 float64, mode string) (Finded int) {
-	var arr []float64
+	arr := []float64{}
 	var modeValue int //-1 for to < 0, +1 for from > 0, 0 for to >  && from < 0
 
 	// Creating array of X or Y according mode

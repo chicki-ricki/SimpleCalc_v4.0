@@ -154,10 +154,10 @@ func (e *equationModel) insertSpases(str string) string {
 			retStr += string(char)
 		} else if strings.Contains(")(^+-*/", string(char)) {
 			retStr += " " + string(char) + " "
-		} else if char == 'm' {
-			retStr += " " + string(char)
-		} else if char == 'd' {
-			retStr += string(char) + " "
+			// } else if char == 'm' {
+			// 	retStr += " " + string(char)
+			// } else if char == 'd' {
+			// 	retStr += string(char) + " "
 		} else {
 			retStr += string(char) + " "
 		}
