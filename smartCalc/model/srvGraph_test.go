@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	configCalc = d.InitConfig("../conf/clevercalcLinuxTest.cfg")
+	configCalc = d.InitConfig("../conf/smartCalcTest.cfg")
 	calcmodel  = NewCalcModel(configCalc)
 
-	TestPath = "../test/"
+	TestPath = "../test"
 
 	testCasesNewGraph = []struct {
 		enter  []string
@@ -492,7 +492,8 @@ func TestDrawLogo(t *testing.T) {
 		er := *calcmodel.NewGraph(e)
 		er.gRM.graphImage = image.NewRGBA(image.Rect(0, 0, int(int(er.config.XWindowGraph)), int(er.config.YWindowGraph)))
 		er.fillBackground(er.gRM.graphImage, color.White)
-		er.drawLogo(er.gRM.graphImage, 21, "CleverCalc")
+		// er.drawLogo(er.gRM.graphImage, 21, "CleverCalc")
+		er.drawLogo(er.gRM.graphImage, 21, "SmartCalc")
 		if im, err := tools.LoadImage(tC.expect); err == nil {
 			if CompareImage(im, er.gRM.graphImage) != tC.b {
 				t.Errorf("DrawLogo's print is incorrect: %v", tC)
@@ -574,7 +575,7 @@ func TestPrintGridValueY(t *testing.T) {
 	var cmpFile string
 	er.gRM.graphImage = image.NewRGBA(image.Rect(0, 0, int(er.config.XWindowGraph), int(er.config.YWindowGraph)))
 	er.fillBackground(er.gRM.graphImage, color.White)
-
+	er.yFrom, er.yTo, er.xFrom, er.xTo = -2, 2, -2, 2
 	for _, tC := range testCasesPrintGridValueY {
 		cmpFile = tC.expect
 		er.printGridValueY(er.gRM.graphImage, tC.enter[0], tC.enter[1], tC.b)
@@ -595,7 +596,7 @@ func TestPrintGridValueX(t *testing.T) {
 	var cmpFile string
 	er.gRM.graphImage = image.NewRGBA(image.Rect(0, 0, int(er.config.XWindowGraph), int(er.config.YWindowGraph)))
 	er.fillBackground(er.gRM.graphImage, color.White)
-
+	er.yFrom, er.yTo, er.xFrom, er.xTo = -2, 2, -2, 2
 	for _, tC := range testCasesPrintGridValueX {
 		cmpFile = tC.expect
 		er.printGridValueX(er.gRM.graphImage, tC.enter[0], tC.enter[1], tC.b)

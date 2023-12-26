@@ -15,3 +15,5 @@ smartCalc/tmp/tempGraph*.png
 smartCalc/static/tmp/tempGraph*.png
 var/history.json
 model/var/history.json
+tests/cover.html
+tests/cover.out

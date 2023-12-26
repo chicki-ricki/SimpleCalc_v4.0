@@ -127,5 +127,5 @@ func (g *graphModel) graphImageBuild() {
 	g.drawEqualText(g.gRM.graphImage, 20, 30, g.createEqualText())
 
 	// Draw Logo to image
-	g.drawLogo(g.gRM.graphImage, 21, "CleverCalc")
+	g.drawLogo(g.gRM.graphImage, 21, "SmartCalc")
 }

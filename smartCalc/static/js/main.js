@@ -144,7 +144,7 @@ socket.onclose = function() {
 function download(url, fileDownload) {
   const a = document.createElement('a')
   a.href = url
-  a.download = "CleverCalc_" + fileDownload + ".png"
+  a.download = "smartCalc_" + fileDownload + ".png"
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)

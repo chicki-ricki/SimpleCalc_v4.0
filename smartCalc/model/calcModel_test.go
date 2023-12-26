@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var ()
+// var ()
 
 // Creating New CalcModel object
 func TestNewCalcModel(t *testing.T) {
