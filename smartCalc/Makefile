@@ -1,5 +1,5 @@
-# GO=go
-Go=go1.19.2
+GO=go
+# Go=go1.19.2
 
 format:
 	@gofmt -w *.go

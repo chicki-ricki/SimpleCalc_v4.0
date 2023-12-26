@@ -106,8 +106,6 @@ import (
         t "smartCalc/tools"
 )
 
-// const FILENAME string = "history.json"
-
 type calcHistory struct {
         config          d.Cfg
         fileName        string
@@ -381,14 +379,11 @@ import (
 )
 
 type equalModel struct {
-        // err         error
         equalString string
-        // prepared    string
-        xEqualStr string
-        // resultStr   string
-        xEqual   float64
-        result   float64
-        equation equationModel
+        xEqualStr   string
+        xEqual      float64
+        result      float64
+        equation    equationModel
 }
 
 func NewEqual(in ModelsInput) *equalModel <span class="cov4" title="42">{
@@ -448,7 +443,6 @@ func (e *equalModel) addStaplesForX(str string) string <span class="cov4" title=
 
         // handle sign before first x at the begining of string
         templength := len(str)
-        // if templength &gt; 1 &amp;&amp; strings.Contains("-x+x/x*x", string(str[0:2])) {
         if templength &gt; 1 &amp;&amp; (string(str[0:2]) == "-x" || string(str[0:2]) == "+x" || string(str[0:2]) == "*x" ||
                 string(str[0:2]) == "/x") </span><span class="cov1" title="1">{
                 str = fmt.Sprint("0" + string(str[0:]))
@@ -495,9 +489,6 @@ func (e *equalModel) addStaplesForX(str string) string <span class="cov4" title=
                 }</span>
         }
 
-        // remove double and triple staples
-        // str = strings.ReplaceAll(strings.ReplaceAll(str, "(((x)))", "(x)"), "((x))", "(x)")
-
         <span class="cov4" title="33">return str</span>
 }
 
@@ -521,16 +512,14 @@ import (
 )
 
 type equationModel struct {
-        err      error
-        equation string
-        Checked  string
-        // prepared  string
+        err       error
+        equation  string
+        Checked   string
         ResultStr string
         Result    float64
 }
 
 func NewEquation(in ModelsInput) *equationModel <span class="cov2" title="13">{
-        // t.DbgPrint(fmt.Sprint("NewEquation", in))
         t.Clg.DeepDebug(fmt.Sprint("_NewEquation_ in=:", in))
         return &amp;equationModel{
                 equation: in.ModelEquationData.EqualValue,
@@ -546,7 +535,6 @@ func (e *equationModel) setError(out *ModelsOutput) *ModelsOutput <span class="c
 
 // Implementing GetResult interface for equationModel
 func (e *equationModel) GetResult() (out ModelsOutput) <span class="cov2" title="9">{
-        // var rez calcViewResult
         out.Mode = 0
         out.ModelEquationResult.Mode = 0
 
@@ -899,7 +887,6 @@ import (
         "image/color"
         "image/draw"
         d "smartCalc/domains"
-        // t "smartCalc/tools"
         "strconv"
         "strings"
 )
@@ -997,9 +984,6 @@ func (g *graphModel) GetResult() (out ModelsOutput) <span class="cov5" title="8"
         out.ModelGraphResult.ResultStr = fmt.Sprintf("Y {%.2f .. %.2f}", g.gRM.yGraphMin, g.gRM.yGraphMax)
 
         out.ModelGraphResult.GraphImage = g.gRM.graphImage
-        // if t.ExportImageToPng(g.gRM.graphImage, g.config.TempFileDir+g.config.TempGraph) != nil {
-        //         return *g.setError(&amp;out)
-        // }
 
         return</span>
 }
@@ -1023,7 +1007,7 @@ func (g *graphModel) graphImageBuild() <span class="cov5" title="8">{
         g.drawEqualText(g.gRM.graphImage, 20, 30, g.createEqualText())
 
         // Draw Logo to image
-        g.drawLogo(g.gRM.graphImage, 21, "CleverCalc")
+        g.drawLogo(g.gRM.graphImage, 21, "SmartCalc")
 }</span>
 </pre>
 		
@@ -1039,7 +1023,6 @@ func (g *graphModel) graphPrepareString() bool <span class="cov4" title="22">{
         if str, err := g.equal.equation.onlyCheck(); err != nil </span><span class="cov2" title="5">{
                 return true
         }</span> else<span class="cov3" title="17"> {
-                // g.preparedEquation = str
                 g.preparedEquation = g.equal.addStaplesForX(str)
         }</span>
         <span class="cov3" title="17">return false</span>
@@ -1336,57 +1319,6 @@ func (g *graphModel) graphGridFindValue(v0 float64, mode string) (Finded int) <s
         <span class="cov5" title="505">t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, Finded))
         return</span>
 
-        // switch mode {
-        // case "X":
-        //         t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, Finded))
-        //         return
-        // case "Y":
-        //         if v0 == 0 &amp;&amp; modeValue == 1 {
-        //                 t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, int(g.config.YWindowGraph)-Finded))
-        //                 return int(g.config.YWindowGraph) - Finded
-        //         } else if v0 == 0 &amp;&amp; modeValue == -1 {
-        //                 t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, 0-Finded))
-        //                 return 0 - Finded
-        //         }
-        //         return int(g.config.YWindowGraph) - Finded
-        // default:
-        //         return 0
-        // }
-
-        // t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, modeValue: |%d|", mode, modeValue))
-        // if v0 == 0 &amp;&amp; modeValue != 0 {
-        //         switch modeValue {
-        //         case -1:
-        //                 Finded = int((0 - arr[len(arr)-1]) / deltaValue)
-        //         case 1:
-        //                 Finded = int(0 - arr[0]/deltaValue)
-        //         }
-        // } else {
-        //         var tempDelta float64 = 2000000
-        //         for i, val := range arr {
-        //                 if math.Abs(v0-val) &lt; tempDelta {
-        //                         tempDelta = math.Abs(v0 - val)
-        //                         Finded = i
-        //                 }
-        //         }
-        // }
-
-        // switch mode {
-        // case "X":
-        //         t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, Finded))
-        //         return
-        // case "Y":
-        //         if v0 == 0 &amp;&amp; modeValue == 1 {
-        //                 t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, int(g.config.YWindowGraph)-Finded))
-        //                 return int(g.config.YWindowGraph) - Finded
-        //         } else if v0 == 0 &amp;&amp; modeValue == -1 {
-        //                 t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, 0-Finded))
-        //                 return 0 - Finded
-        //         }
-        //         return int(g.config.YWindowGraph) - Finded
-        // default:
-        //         return 0
-        // }
 }
 
 // formatting Grid value for print

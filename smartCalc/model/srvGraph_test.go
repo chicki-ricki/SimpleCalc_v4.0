@@ -15,7 +15,8 @@ import (
 
 var (
 	configCalc = d.InitConfig("../conf/smartCalcTest.cfg")
-	calcmodel  = NewCalcModel(configCalc)
+	// configCalc = d.InitConfig("")
+	calcmodel = NewCalcModel(configCalc)
 
 	TestPath = "../test"
 
@@ -512,7 +513,6 @@ func TestDrawLogo(t *testing.T) {
 		er := *calcmodel.NewGraph(e)
 		er.gRM.graphImage = image.NewRGBA(image.Rect(0, 0, int(int(er.config.XWindowGraph)), int(er.config.YWindowGraph)))
 		er.fillBackground(er.gRM.graphImage, color.White)
-		// er.drawLogo(er.gRM.graphImage, 21, "CleverCalc")
 		er.drawLogo(er.gRM.graphImage, 21, "SmartCalc")
 		if im, err := tools.LoadImage(tC.expect); err == nil {
 			if CompareImage(im, er.gRM.graphImage) != tC.b {
@@ -526,7 +526,7 @@ func TestDrawLogo(t *testing.T) {
 		er.config.TypePath = TestPath + "/temptype_no"
 
 		er.fillBackground(er.gRM.graphImage, color.White)
-		er.drawLogo(er.gRM.graphImage, 21, "CleverCalc")
+		er.drawLogo(er.gRM.graphImage, 21, "SmartCalc")
 		if im, err := tools.LoadImage(tC.expect); err == nil {
 			if CompareImage(im, er.gRM.graphImage) == tC.b {
 				t.Errorf("Errors catch working incorrect: %v", tC)
@@ -538,7 +538,7 @@ func TestDrawLogo(t *testing.T) {
 		os.WriteFile(TestPath+"/temptype", []byte("Check!"), 0644)
 		er.config.TypePath = TestPath + "/temptype"
 		er.fillBackground(er.gRM.graphImage, color.White)
-		er.drawLogo(er.gRM.graphImage, 21, "CleverCalc")
+		er.drawLogo(er.gRM.graphImage, 21, "SmartCalc")
 		if im, err := tools.LoadImage(tC.expect); err == nil {
 			if CompareImage(im, er.gRM.graphImage) == tC.b {
 				t.Errorf("Errors catch working incorrect: %v", tC)

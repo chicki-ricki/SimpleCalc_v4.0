@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"runtime"
-	// t "smartCalc/tools"
 )
 
 type Cfg struct {
@@ -28,21 +27,18 @@ var (
 	Os      = runtime.GOOS   // "windows", "darwin", "linux"
 	Arch    = runtime.GOARCH // "amd64", "386", "arm"
 	WD, _   = os.Getwd()     // get workdirectory
-	testDir = testDirFind(WD)
+	testDir = "../"
 
 	// Path for config in linux system
-	// [0] - main; [1] - optional
 	ConfigLinuxPath = []string{
 		"/etc/smartCalc/smartCalcLinux.cfg",
 		testDir + "/conf/smartCalcLinuxTest.cfg",
-		"../conf/smartCalcLinuxTest.cfg"}
+		"../conf/smartCalcLinuxTest.cfg",
+	}
 
 	// Path for config in Mac system
-	// [0] - main; [1] - for test
 	ConfigMacPath = []string{
-		// "/Applications/smartCalc.app/Contents/Resources/config/smartCalcMacOS.cfg",
-		"../conf/smartCalcTest.cfg",
-		testDir + "/config/smartCalcTest.cfg",
+		testDir + "conf/smartCalcTest.cfg",
 	}
 
 	Config *Cfg = InitConfig("") // Handling config path by type config name in quotes (but this way not recommend)
@@ -59,67 +55,15 @@ var (
 		"./static/img/backgroundMathw4.jpg",
 		"./static/js/main.js",
 		"./views/calculate/startCalculate.html",
-		// "./views/calculate/startCalculate.tpl",
-		// "./views/default/hello-sitepoint.tpl",
 		"./views/index.tpl",
 	}
 )
-
-// // Create and write new config for Mac
-// func createNewMacConfig() *Cfg {
-// 	var c Cfg
-
-// 	c.WorkDir = WD
-// 	c.AssetsDir = c.WorkDir + "/assets/"
-// 	c.LogDir = c.WorkDir + "/logs/"
-// 	c.LogFile = "smartCalc.log"
-// 	c.TempFileDir = c.WorkDir + "/static/tmp/"
-// 	c.TempGraph = "tempGraph.png"
-// 	c.HistoryFile = c.WorkDir + "/var/history.json"
-// 	c.XWindowGraph = 600
-// 	c.YWindowGraph = 600
-// 	c.DarkTheme = "no"
-// 	c.IconPath = c.AssetsDir + "Icon.png"
-// 	c.TypePath = c.AssetsDir + "protosans56.ttf"
-// 	c.Debug = 3
-
-// 	fmt.Println("Create config with inner data")
-
-// 	return &c
-// }
-
-// // Create and write new config for Linux
-// func createNewLinuxConfig() *Cfg {
-// 	var c Cfg
-
-// 	c.WorkDir = WD
-// 	c.AssetsDir = c.WorkDir + "/assets/"
-// 	c.LogDir = c.WorkDir + "/logs/"
-// 	c.LogFile = "smartcalc.log"
-// 	c.TempFileDir = c.WorkDir + "/static/tmp/"
-// 	c.TempGraph = "tempGraph.png"
-// 	c.HistoryFile = c.WorkDir + "/var/history.json"
-// 	c.XWindowGraph = 600
-// 	c.YWindowGraph = 600
-// 	c.DarkTheme = "yes"
-// 	c.IconPath = c.AssetsDir + "Icon.png"
-// 	c.TypePath = c.WorkDir + "/static/fonts/" + "protosans56.ttf"
-// 	c.Debug = 3
-
-// 	fmt.Println("Create config with inner data")
-
-// 	return &c
-// }
 
 // Create and write new config
 func createNewConfig() *Cfg {
 	var c Cfg
 
-	// t.Clg.Debug()
-	// t.Clg.Debug(fmt.Sprint("createNewConfig workDir: ", WD))
-	fmt.Println("createNewConfig|workDir:", WD)
-
-	c.WorkDir = WD
+	c.WorkDir = "."
 	c.AssetsDir = c.WorkDir + "/assets/"
 	c.LogDir = c.WorkDir + "/logs/"
 	c.LogFile = "smartCalc.log"
@@ -128,10 +72,10 @@ func createNewConfig() *Cfg {
 	c.HistoryFile = c.WorkDir + "/var/history.json"
 	c.XWindowGraph = 600
 	c.YWindowGraph = 600
-	// c.DarkTheme = "no"
+	c.DarkTheme = "no"
 	c.IconPath = c.AssetsDir + "Icon.png"
 	c.TypePath = c.WorkDir + "/static/fonts/" + "protosans56.ttf"
-	c.Debug = 4
+	c.Debug = 3
 
 	fmt.Println("Create config with inner data")
 
@@ -172,28 +116,13 @@ func InitConfig(fileName string) *Cfg {
 			}
 		}
 
-	// // Create New config from inner information if load unsuccesful
-	// // return createNewLinuxConfig()
-	// return createNewConfig()
-
 	case "darwin":
 		for _, path := range ConfigMacPath {
 			if err := readConfig(path, &c); err == nil {
 				return &c
 			}
 		}
-		// // Create New config from inner information if load unsuccesful
-		// // return createNewMacConfig()
-		// return createNewConfig()
 	}
 
-	// return createNewLinuxConfig()
 	return createNewConfig()
-}
-
-func testDirFind(WD string) string {
-	if len(WD) > 20 {
-		return WD[:len(WD)-6]
-	}
-	return WD
 }

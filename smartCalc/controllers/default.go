@@ -13,11 +13,3 @@ func (c *MainController) Get() {
 	c.Data["Email"] = "mlarra@student.21-school.ru"
 	c.TplName = "index.tpl"
 }
-
-func (c *MainController) HelloSitePoint() {
-	c.Data["Website"] = "smartCalc.web"
-	c.Data["Email"] = "mlarra@student.21-school.ru"
-	c.Data["EmailName"] = "Kostareva Eugenia"
-	c.Data["ID"] = c.Ctx.Input.Param(":id")
-	c.TplName = "default/hello-sitepoint.tpl"
-}
