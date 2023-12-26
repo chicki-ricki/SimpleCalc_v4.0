@@ -30,12 +30,12 @@ func NewCalcHistory(c d.Cfg) *calcHistory {
 func (h *calcHistory) HistoryHandler(in ModelsInput, out ModelsOutput) {
 	h.createHistoryItem(in, out)
 	h.addHistoryString()
-	h.writeHistoryJson(h.createHistoryJson())
+	_ = h.writeHistoryJson(h.createHistoryJson())
 }
 
 func (h *calcHistory) CleanHistory() {
 	h.historyData = []d.HistoryItem{}
-	h.writeHistoryJson(h.createHistoryJson())
+	_ = h.writeHistoryJson(h.createHistoryJson())
 }
 
 //----------------------------------------Creating historyItem START

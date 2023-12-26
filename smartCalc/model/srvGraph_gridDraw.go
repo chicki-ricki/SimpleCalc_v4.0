@@ -161,6 +161,7 @@ func (g *graphModel) graphGridFindValue(v0 float64, mode string) (Finded int) {
 	case "Y":
 		arr = g.createArrayValue(g.yFrom, g.yTo, float64(g.config.YWindowGraph))
 	default:
+		arr[0] = 0
 		return 0
 	}
 
