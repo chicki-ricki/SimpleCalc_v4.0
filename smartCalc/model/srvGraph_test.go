@@ -1,6 +1,7 @@
 package model
 
 import (
+	"os"
 	d "smartCalc/domains"
 	tools "smartCalc/tools"
 
@@ -91,6 +92,14 @@ var (
 		{[]string{"x^(2)/10", "-300", "300", "-300", "300"}, TestPath + "/graphDraw_2.png", true},
 	}
 
+	testCasesGraphDraw2 = []struct {
+		enter  []string
+		expect string
+		b      bool
+	}{
+		{[]string{"1/x", "-0.1", "0.1", "-30000", "30000"}, TestPath + "/graphDraw_1.png", true},
+	}
+
 	testCasesDrawEqualText = []struct {
 		enter  []string
 		expect string
@@ -154,6 +163,9 @@ var (
 		{[]float64{10, 100}, 10},
 		{[]float64{500, 1500}, 200},
 		{[]float64{2, 3}, 0.2},
+		{[]float64{10000000, -3000000}, 1000000},
+		{[]float64{100000000, -30000000}, 1000000},
+		{[]float64{50000000, -3000000}, 1000000},
 		{[]float64{0.1, 0.2}, 0.02},
 		{[]float64{0.01, 0.03}, 0.002},
 	}
@@ -197,8 +209,15 @@ var (
 		expect int
 	}{
 		{[]float64{10, 100, 45}, "X", 233},
+		{[]float64{10, 100, 45}, "M", 0},
+		{[]float64{10, 100, 45}, "y", 0},
 		{[]float64{10, 100, 15}, "X", 33},
 		{[]float64{-10, 900, 45}, "X", 36},
+		{[]float64{-1000, -100, -450}, "X", 367},
+		{[]float64{-10000, -5000, -5555}, "Y", 67},
+		{[]float64{-10000, -5000, -7500}, "Y", 300},
+		{[]float64{-10000, -5000, 0}, "Y", -600},
+		{[]float64{-10000, 1000, 0}, "Y", 55},
 	}
 
 	testCasesDrawHLine = []struct {
@@ -407,6 +426,7 @@ func TestGraphImageBuild(t *testing.T) {
 		er.graphPrepareString()
 		er.calculateData()
 		er.graphImageBuild()
+		// tools.ExportImageToPng(er.gRM.graphImage, "test1.png")
 		if im, err := tools.LoadImage(tC.expect); err == nil {
 			if CompareImage(im, er.gRM.graphImage) != tC.b {
 				t.Errorf("GraphImageBuild's print is incorrect: %v", tC)
@@ -501,6 +521,34 @@ func TestDrawLogo(t *testing.T) {
 		} else {
 			fmt.Println("Can't load test image")
 		}
+
+		tempfileName := er.config.TypePath
+		er.config.TypePath = TestPath + "/temptype_no"
+
+		er.fillBackground(er.gRM.graphImage, color.White)
+		er.drawLogo(er.gRM.graphImage, 21, "CleverCalc")
+		if im, err := tools.LoadImage(tC.expect); err == nil {
+			if CompareImage(im, er.gRM.graphImage) == tC.b {
+				t.Errorf("Errors catch working incorrect: %v", tC)
+			}
+		} else {
+			fmt.Println("Can't load test image")
+		}
+
+		os.WriteFile(TestPath+"/temptype", []byte("Check!"), 0644)
+		er.config.TypePath = TestPath + "/temptype"
+		er.fillBackground(er.gRM.graphImage, color.White)
+		er.drawLogo(er.gRM.graphImage, 21, "CleverCalc")
+		if im, err := tools.LoadImage(tC.expect); err == nil {
+			if CompareImage(im, er.gRM.graphImage) == tC.b {
+				t.Errorf("Errors catch working incorrect: %v", tC)
+			}
+		} else {
+			fmt.Println("Can't load test image")
+		}
+
+		os.Remove(TestPath + "/temptype")
+		er.config.TypePath = tempfileName
 	}
 }
 
@@ -550,6 +598,7 @@ func TestGraphGridFindValue(t *testing.T) {
 	er.config = configCalc
 	for _, tC := range testCasesGraphGridFindValue {
 		er.xFrom, er.xTo = tC.enter[0], tC.enter[1]
+		er.yFrom, er.yTo = tC.enter[0], tC.enter[1]
 		// int(er.config.XWindowGraph) and int(er.config.YWindowGraph) from global (=600)
 		actual := er.graphGridFindValue(tC.enter[2], tC.mode)
 		if actual != tC.expect {
@@ -582,7 +631,7 @@ func TestPrintGridValueY(t *testing.T) {
 	}
 
 	if im, err := tools.LoadImage(cmpFile); err == nil {
-		if CompareImage(im, er.gRM.graphImage) {
+		if !CompareImage(im, er.gRM.graphImage) {
 			t.Errorf("PrintGridValueY's print is incorrect:")
 		}
 	} else {
@@ -603,7 +652,7 @@ func TestPrintGridValueX(t *testing.T) {
 	}
 
 	if im, err := tools.LoadImage(cmpFile); err == nil {
-		if CompareImage(im, er.gRM.graphImage) {
+		if !CompareImage(im, er.gRM.graphImage) {
 			t.Errorf("PrintGridValueX's print is incorrect:")
 		}
 	} else {
@@ -642,12 +691,36 @@ func TestGraphDraw(t *testing.T) {
 		er.gRM.graphImage = image.NewRGBA(image.Rect(0, 0, int(er.config.XWindowGraph), int(er.config.YWindowGraph)))
 		er.fillBackground(er.gRM.graphImage, color.White)
 		er.graphDraw()
+		// tools.ExportImageToPng(er.gRM.graphImage, "test1.png")
 		if im, err := tools.LoadImage(tC.expect); err == nil {
 			if CompareImage(im, er.gRM.graphImage) != tC.b {
 				t.Errorf("GraphDraw's print is incorrect: %v", tC)
 			}
 		} else {
 			fmt.Println("Can't load test image")
+		}
+	}
+}
+
+// Draw graph line at the sCoordinates Array
+func TestGraphDraw2(t *testing.T) {
+	for _, tC := range testCasesGraphDraw2 {
+		e := createMInputStructGraph(tC.enter[0], tC.enter[1], tC.enter[2], tC.enter[3], tC.enter[4])
+		er := *calcmodel.NewGraph(e)
+		er.graphPrepareString()
+		er.calculateData()
+		er.gRM.graphImage = image.NewRGBA(image.Rect(0, 0, int(er.config.XWindowGraph), int(er.config.YWindowGraph)))
+		er.fillBackground(er.gRM.graphImage, color.White)
+		er.graphDraw()
+		var count int
+		for _, val := range er.gRM.pixelData {
+			if val.err == true {
+				count++
+				break
+			}
+		}
+		if count == 0 {
+			t.Errorf("GraphDraw's print is incorrect: errors skipped")
 		}
 	}
 }

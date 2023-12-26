@@ -1,0 +1,1601 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>model: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">smartCalc/model/calcHistory.go (100.0%)</option>
+				
+				<option value="file1">smartCalc/model/calcModel.go (100.0%)</option>
+				
+				<option value="file2">smartCalc/model/srvEqual.go (100.0%)</option>
+				
+				<option value="file3">smartCalc/model/srvEquation.go (100.0%)</option>
+				
+				<option value="file4">smartCalc/model/srvGraph.go (100.0%)</option>
+				
+				<option value="file5">smartCalc/model/srvGraph_calculate.go (100.0%)</option>
+				
+				<option value="file6">smartCalc/model/srvGraph_graphDraw.go (100.0%)</option>
+				
+				<option value="file7">smartCalc/model/srvGraph_gridDraw.go (100.0%)</option>
+				
+				<option value="file8">smartCalc/model/srvGraph_primitives.go (100.0%)</option>
+				
+				<option value="file9">smartCalc/model/srvGraph_textDraw.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package model
+
+import (
+        "encoding/json"
+        "fmt"
+        "os"
+        d "smartCalc/domains"
+        t "smartCalc/tools"
+)
+
+// const FILENAME string = "history.json"
+
+type calcHistory struct {
+        config          d.Cfg
+        fileName        string
+        historyData     []d.HistoryItem
+        tempHistoryItem d.HistoryItem
+}
+
+//--------------------------------------Public Methods
+
+// create calcHistory object
+func NewCalcHistory(c d.Cfg) *calcHistory <span class="cov9" title="17">{
+        return &amp;calcHistory{
+                config:      c,
+                fileName:    c.HistoryFile,
+                historyData: readHistoryJson(c.HistoryFile),
+        }
+}</span>
+
+// history hendler
+func (h *calcHistory) HistoryHandler(in ModelsInput, out ModelsOutput) <span class="cov9" title="19">{
+        h.createHistoryItem(in, out)
+        h.addHistoryString()
+        h.writeHistoryJson(h.createHistoryJson())
+}</span>
+
+func (h *calcHistory) CleanHistory() <span class="cov2" title="2">{
+        h.historyData = []d.HistoryItem{}
+        h.writeHistoryJson(h.createHistoryJson())
+}</span>
+
+//----------------------------------------Creating historyItem START
+
+// creating history string
+func (h *calcHistory) createHistoryItem(in ModelsInput, out ModelsOutput) <span class="cov9" title="19">{
+        // Creating new history string
+        switch in.Mode </span>{
+        case 0:<span class="cov6" title="8">
+                h.createHistoryCalc(in, out)</span>
+        case 1:<span class="cov6" title="7">
+                h.createHistoryEqual(in, out)</span>
+        case 2:<span class="cov4" title="4">
+                h.createHistoryGraph(in, out)</span>
+        }
+}
+
+// creating history string for Calc mode
+func (h *calcHistory) createHistoryCalc(in ModelsInput, out ModelsOutput) <span class="cov7" title="11">{
+        h.tempHistoryItem.Mode = "calc"
+        h.tempHistoryItem.Equation = in.ModelEquationData.EqualValue
+        h.tempHistoryItem.Entrys = ""
+        if out.Err </span><span class="cov4" title="4">{
+                h.tempHistoryItem.Result = "error"
+        }</span> else<span class="cov6" title="7"> {
+                h.tempHistoryItem.Result = out.ModelEquationResult.ResultStr
+        }</span>
+}
+
+// creating history string for Equal mode
+func (h *calcHistory) createHistoryEqual(in ModelsInput, out ModelsOutput) <span class="cov7" title="9">{
+
+        h.tempHistoryItem.Mode = "equal"
+        h.tempHistoryItem.Equation = in.ModelEqualData.EqualValue
+        h.tempHistoryItem.XEqual = in.ModelEqualData.XEqualStr
+        h.tempHistoryItem.Entrys = "{X=" + in.ModelEqualData.XEqualStr + "} "
+        if out.Err </span><span class="cov2" title="2">{
+                h.tempHistoryItem.Result = "error"
+        }</span> else<span class="cov6" title="7"> {
+                h.tempHistoryItem.Result = out.ModelEqualResult.ResultStr
+        }</span>
+}
+
+// creating history string for Graph mode
+func (h *calcHistory) createHistoryGraph(in ModelsInput, out ModelsOutput) <span class="cov6" title="6">{
+
+        h.tempHistoryItem.Mode = "graph"
+        h.tempHistoryItem.Equation = in.ModelGraphData.EqualValue
+        h.tempHistoryItem.XFrom = in.ModelGraphData.XFromStr
+        h.tempHistoryItem.XTo = in.ModelGraphData.XToStr
+        h.tempHistoryItem.YFrom = in.ModelGraphData.YFromStr
+        h.tempHistoryItem.YTo = in.ModelGraphData.YToStr
+        h.tempHistoryItem.Entrys = fmt.Sprintf("X{%s .. %s} Y{%s .. %s} ",
+                in.ModelGraphData.XFromStr,
+                in.ModelGraphData.XToStr,
+                in.ModelGraphData.YFromStr,
+                in.ModelGraphData.YToStr)
+        if out.Err </span><span class="cov2" title="2">{
+                h.tempHistoryItem.Result = "error"
+        }</span> else<span class="cov4" title="4"> {
+                h.tempHistoryItem.Result = out.ModelGraphResult.ResultStr
+        }</span>
+}
+
+//----------------------------------------Creating historyItem END
+//----------------------------------------Handle history START
+
+// adding history string to history base
+func (h *calcHistory) addHistoryString() <span class="cov9" title="20">{
+        h.historyData = append(h.historyData, h.tempHistoryItem) // adding historyItem to history Base
+}</span>
+
+// creating Json data from
+func (h *calcHistory) createHistoryJson() (data []byte) <span class="cov10" title="23">{
+        data, _ = json.MarshalIndent(h.historyData, "", "    ") // creating Json
+        return data
+}</span>
+
+// writing entire history base to file
+func (h *calcHistory) writeHistoryJson(data []byte) (err error) <span class="cov10" title="23">{
+        if err = os.WriteFile(h.fileName, data, 0777); err != nil </span><span class="cov1" title="1">{
+                t.Clg.Error(fmt.Sprintf("Can't write history to file %s, %v", h.fileName, err))
+        }</span>
+        <span class="cov10" title="23">return</span>
+}
+
+// reading entire history from file
+func readHistoryJson(fileName string) (hdata []d.HistoryItem) <span class="cov9" title="21">{
+
+        dataFromFile, err := os.ReadFile(fileName)
+        if err != nil </span><span class="cov1" title="1">{
+                t.Clg.Error(fmt.Sprintf("Can't read history from file %s, %v", fileName, err))
+                return
+        }</span>
+
+        <span class="cov9" title="20">err = json.Unmarshal(dataFromFile, &amp;hdata)
+        if err != nil </span><span class="cov1" title="1">{
+                t.Clg.Error("Can't unmarshall history json")
+        }</span>
+
+        <span class="cov9" title="20">return</span>
+}
+
+//----------------------------------------Handle history END
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package model
+
+import (
+        "image/draw"
+        d "smartCalc/domains"
+)
+
+//---------------------------------------Types START
+
+// structure for output Model data
+type ModelsOutput struct {
+        Err                 bool
+        Mode                int
+        ModelEquationResult ModelResultEquation
+        ModelEqualResult    ModelResultEqual
+        ModelGraphResult    ModelResultGraph
+}
+
+// structure for Input Model data
+type ModelsInput struct {
+        Mode              int
+        ModelEquationData ModelDataEquation
+        ModelEqualData    ModelDataEqual
+        ModelGraphData    ModelDataGraph
+}
+
+// structure for Input Equation data
+type ModelDataEquation struct {
+        Mode       int
+        EqualValue string // string of equation for calc
+}
+
+// structure for Input Equal data
+type ModelDataEqual struct {
+        Mode       int
+        EqualValue string  // string of equal for equal or graph
+        XEqualStr  string  // raw data
+        XEqual     float64 // Value X for equal
+}
+
+// structure for Input Graph data
+type ModelDataGraph struct {
+        Mode                               int
+        EqualValue                         string  // string of equal for equal or graph
+        XFrom, XTo, YFrom, YTo             float64 // border Value for graph
+        XFromStr, XToStr, YFromStr, YToStr string  //raw data
+}
+
+// structure for Ouput Equation data
+type ModelResultEquation struct {
+        Err       bool   // true = error
+        Mode      int    // calc - 0, equal - 1 or graph - 2
+        ResultStr string // raw data
+}
+
+// structure for Ouput Equal data
+type ModelResultEqual struct {
+        Err       bool   // true = error
+        Mode      int    // calc - 0, equal - 1 or graph - 2
+        ResultStr string // raw data
+        // Result    interface{}
+}
+
+// structure for Ouput Graph data
+type ModelResultGraph struct {
+        Err        bool   // true = error
+        Mode       int    // calc - 0, equal - 1 or graph - 2
+        ResultStr  string // raw data
+        GraphImage draw.Image
+}
+
+// common interface for services
+type request interface {
+        GetResult() ModelsOutput
+}
+
+// struct for CalcModel
+type CalcModel struct {
+        Config  *d.Cfg
+        request request
+        history calcHistory
+}
+
+var ModelCalc = NewCalcModel(d.Config)
+
+//---------------------------------------Types END
+
+// Creating New CalcModel object
+func NewCalcModel(cfgm *d.Cfg) *CalcModel <span class="cov9" title="16">{
+
+        return &amp;CalcModel{
+                Config:  cfgm,
+                history: *NewCalcHistory(*cfgm),
+        }
+}</span>
+
+//-------------------Implementing Models Interface
+
+func (m *CalcModel) GetCalcResult(in ModelsInput) (out ModelsOutput) <span class="cov10" title="21">{
+
+        if in.Mode &gt; -1 &amp;&amp; in.Mode &lt; 3 </span><span class="cov9" title="19">{
+                switch in.Mode </span>{
+                case 0:<span class="cov7" title="8">
+                        m.request = NewEquation(in)</span>
+                case 1:<span class="cov6" title="7">
+                        m.request = NewEqual(in)</span>
+                case 2:<span class="cov5" title="4">
+                        m.request = m.NewGraph(in)</span>
+                }
+
+                <span class="cov9" title="19">out = m.request.GetResult()
+                m.history.HistoryHandler(in, out)
+                return</span>
+        }
+
+        <span class="cov3" title="2">out.Err = true
+        return</span>
+}
+
+func (m *CalcModel) CleanHistory() <span class="cov1" title="1">{
+        m.history.CleanHistory()
+}</span>
+
+func (m *CalcModel) GetHistory() []d.HistoryItem <span class="cov1" title="1">{
+        return m.history.historyData
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package model
+
+import (
+        "fmt"
+        "math"
+        d "smartCalc/domains"
+        "strconv"
+        "strings"
+)
+
+type equalModel struct {
+        // err         error
+        equalString string
+        // prepared    string
+        xEqualStr string
+        // resultStr   string
+        xEqual   float64
+        result   float64
+        equation equationModel
+}
+
+func NewEqual(in ModelsInput) *equalModel <span class="cov4" title="42">{
+        var equal equalModel
+        d.DbgPrint(fmt.Sprint("NewEquaL", in))
+        equal.equation.equation = in.ModelEqualData.EqualValue
+        equal.equalString = in.ModelEqualData.EqualValue
+        equal.xEqualStr = in.ModelEqualData.XEqualStr
+        equal.xEqual = in.ModelEqualData.XEqual
+        return &amp;equal
+}</span>
+
+func (e *equalModel) setError(out *ModelsOutput) *ModelsOutput <span class="cov2" title="4">{
+        out.Err = true
+        out.ModelEqualResult.Err = true
+        out.ModelEqualResult.ResultStr = "Error"
+        return out
+}</span>
+
+// Implementing request interface for equalModel
+func (e *equalModel) GetResult() (out ModelsOutput) <span class="cov3" title="13">{
+        out.ModelEqualResult.Mode = 1
+        out.Mode = 1
+
+        str, err := e.equation.onlyCheck()
+        if err != nil </span><span class="cov1" title="1">{
+                return *e.setError(&amp;out)
+        }</span>
+
+        <span class="cov3" title="12">if e.xEqual, err = strconv.ParseFloat(e.xEqualStr, 64); err != nil </span><span class="cov1" title="2">{
+                return *e.setError(&amp;out)
+        }</span>
+
+        <span class="cov3" title="10">e.result, err = e.equation.onlyCalculate(e.equation.prepareString(e.equalPrepareString(str)))
+        if err != nil </span><span class="cov1" title="1">{
+                return *e.setError(&amp;out)
+        }</span>
+
+        <span class="cov3" title="9">out.ModelEqualResult.ResultStr = strconv.FormatFloat(e.result, 'f', -1, 64)
+        return</span>
+}
+
+// Calculate checked string with inputed x
+func (e *equalModel) calculate(str string, x float64) (pixel SCoordinates) <span class="cov10" title="9015">{
+        var err error
+        pixel.x = x
+        pixel.y, err = e.equation.onlyCalculate(e.equation.prepareString(strings.ReplaceAll(str, "x", strconv.FormatFloat(x, 'f', -1, 64))))
+        if err != nil || math.IsNaN(pixel.y) || math.IsInf(pixel.y, 0) </span><span class="cov6" title="301">{
+                pixel.err = true
+                return
+        }</span>
+        <span class="cov9" title="8714">return</span>
+}
+
+// Adding staples and Multi for x and brackets in equal
+func (e *equalModel) addStaplesForX(str string) string <span class="cov4" title="35">{
+
+        // handle sign before first x at the begining of string
+        templength := len(str)
+        // if templength &gt; 1 &amp;&amp; strings.Contains("-x+x/x*x", string(str[0:2])) {
+        if templength &gt; 1 &amp;&amp; (string(str[0:2]) == "-x" || string(str[0:2]) == "+x" || string(str[0:2]) == "*x" ||
+                string(str[0:2]) == "/x") </span><span class="cov1" title="1">{
+                str = fmt.Sprint("0" + string(str[0:]))
+        }</span>
+
+        // handle x at the begining of string
+        <span class="cov4" title="35">templength = len(str)
+        if string(str[0:1]) == "x" </span><span class="cov3" title="15">{
+                switch templength == 1 </span>{
+                case false:<span class="cov3" title="13">
+                        str = fmt.Sprint("(x)" + string(str[1:]))</span>
+                case true:<span class="cov1" title="2">
+                        str = "x"
+                        return str</span>
+                }
+        }
+
+        // handle x at the tail of string
+        <span class="cov4" title="33">templength = len(str)
+        if string(str[templength-1:templength]) == "x" </span><span class="cov3" title="8">{
+                switch strings.Contains("0123456789x)", string(str[templength-2:templength-1])) </span>{
+                case true:<span class="cov2" title="5">
+                        str = fmt.Sprint(string(str[0:templength-1]) + "*(x)")</span>
+                case false:<span class="cov2" title="3">
+                        str = fmt.Sprint(string(str[0:templength-1]) + "(x)")</span>
+                }
+        }
+
+        // handle x at the middle of string
+        <span class="cov4" title="33">for i := len(str) - 2; i &gt;= 1; i-- </span><span class="cov6" title="226">{
+                if string(str[i:i+1]) == "x" &amp;&amp; strings.Contains("0123456789x)", string(str[i-1:i])) </span><span class="cov3" title="15">{
+                        str = fmt.Sprint(str[0:i] + "*(x)" + string(str[i+1:]))
+                }</span> else<span class="cov6" title="211"> if string(str[i:i+1]) == "x" &amp;&amp; !strings.Contains("0123456789", string(str[i-1:i])) </span><span class="cov4" title="31">{
+                        str = fmt.Sprint(string(str[0:i]) + "(x)" + string(str[i+1:]))
+                }</span> else<span class="cov6" title="180"> if string(str[i:i+1]) == "(" &amp;&amp; strings.Contains("0123456789x)", string(str[i-1:i])) </span><span class="cov3" title="8">{
+                        str = fmt.Sprint(str[0:i] + "*(" + string(str[i+1:]))
+                }</span>
+        }
+
+        // handle ")num" situation
+        <span class="cov4" title="33">for i := len(str) - 2; i &gt;= 1; i-- </span><span class="cov6" title="341">{
+                if strings.Contains("0123456789", string(str[i:i+1])) &amp;&amp; string(str[i-1:i]) == ")" </span><span class="cov1" title="1">{
+                        str = fmt.Sprint(str[0:i] + "*" + string(str[i:]))
+                }</span>
+        }
+
+        // remove double and triple staples
+        // str = strings.ReplaceAll(strings.ReplaceAll(str, "(((x)))", "(x)"), "((x))", "(x)")
+
+        <span class="cov4" title="33">return str</span>
+}
+
+// insert value of x and insert staples fo x
+func (e *equalModel) equalPrepareString(str string) string <span class="cov3" title="11">{
+        return strings.ReplaceAll(e.addStaplesForX(str), "x", e.xEqualStr)
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package model
+
+import (
+        "errors"
+        "fmt"
+        "math"
+        "strconv"
+        "strings"
+        "unicode"
+
+        t "smartCalc/tools"
+)
+
+type equationModel struct {
+        err      error
+        equation string
+        Checked  string
+        // prepared  string
+        ResultStr string
+        Result    float64
+}
+
+func NewEquation(in ModelsInput) *equationModel <span class="cov2" title="13">{
+        // t.DbgPrint(fmt.Sprint("NewEquation", in))
+        t.Clg.DeepDebug(fmt.Sprint("_NewEquation_ in=:", in))
+        return &amp;equationModel{
+                equation: in.ModelEquationData.EqualValue,
+        }
+}</span>
+
+func (e *equationModel) setError(out *ModelsOutput) *ModelsOutput <span class="cov1" title="3">{
+        out.Err = true
+        out.ModelEquationResult.Err = true
+        out.ModelEquationResult.ResultStr = "Error"
+        return out
+}</span>
+
+// Implementing GetResult interface for equationModel
+func (e *equationModel) GetResult() (out ModelsOutput) <span class="cov2" title="9">{
+        // var rez calcViewResult
+        out.Mode = 0
+        out.ModelEquationResult.Mode = 0
+
+        if e.Checked, e.err = e.onlyCheck(); e.err != nil </span><span class="cov1" title="1">{
+                t.Clg.Info(fmt.Sprintf("_GetResult(Equation)_ fail check: %v", e.err))
+                return *e.setError(&amp;out)
+        }</span>
+        <span class="cov2" title="8">if e.Result, e.err = e.onlyCalculate(e.prepareString(e.Checked)); e.err != nil </span><span class="cov1" title="2">{
+                t.Clg.Info(fmt.Sprintf("_GetResult(Equation)_ fail calculate: %v", e.err))
+                return *e.setError(&amp;out)
+        }</span>
+        <span class="cov2" title="6">out.ModelEquationResult.ResultStr = strconv.FormatFloat(e.Result, 'f', -1, 64)
+        return</span>
+}
+
+// insert spaces between expressions and zero before unary (-2 &gt; 0-2)
+func (e *equationModel) prepareString(str string) string <span class="cov7" title="9051">{
+        return e.insertSpases(e.replaceUnary(str))
+}</span>
+
+// checking for empty string and brackets
+func (e *equationModel) onlyCheck() (string, error) <span class="cov3" title="46">{
+        if e.equation != "" &amp;&amp; e.checkBrackets(e.equation) </span><span class="cov3" title="38">{
+                e.Checked = e.equation
+        }</span> else<span class="cov2" title="8"> {
+                e.err = errors.New("Invalid brackets or empty string")
+        }</span>
+        <span class="cov3" title="46">return e.Checked, e.err</span>
+}
+
+// calculate prepared string
+func (e *equationModel) onlyCalculate(str string) (rez float64, err error) <span class="cov7" title="9037">{
+        if str != "" </span><span class="cov7" title="9036">{
+                t.Clg.Debug(fmt.Sprintf("_onlyCalculate_ input string:|%s|", str))
+                if rez, err = e.startCalculate(str); err != nil </span><span class="cov2" title="6">{
+                        t.Clg.Info(fmt.Sprintf("_onlyCalculate_ fail calculate: %v", err))
+                        e.err = err
+                }</span>
+        } else<span class="cov1" title="1"> {
+                t.Clg.Info("_onlyCalculate_ fail calculate: Empty request")
+                e.err = errors.New("Empty request")
+        }</span>
+        <span class="cov7" title="9037">return rez, e.err</span>
+}
+
+// check for brackets balance
+func (e *equationModel) checkBrackets(str string) bool <span class="cov3" title="48">{
+        var stack []string
+        for _, char := range str </span><span class="cov5" title="314">{
+                lenght := len(stack) - 1
+                switch </span>{
+                case char == '(':<span class="cov3" title="22">
+                        stack = append(stack, ")")</span>
+                case char == '[':<span class="cov1" title="2">
+                        stack = append(stack, "]")</span>
+                case char == '{':<span class="cov1" title="4">
+                        stack = append(stack, "}")</span>
+                case char == ')' || char == '}' || char == ']':<span class="cov3" title="23">
+                        if len(stack) == 0 || stack[lenght] != string(char) </span><span class="cov1" title="4">{
+                                return false
+                        }</span>
+                        <span class="cov3" title="19">stack[lenght] = ""
+                        stack = stack[:lenght]</span>
+                default:<span class="cov4" title="263">
+                        break</span>
+                }
+        }
+        <span class="cov3" title="44">if len(stack) == 0 </span><span class="cov3" title="39">{
+                return true
+        }</span> else<span class="cov2" title="5"> {
+                return false
+        }</span>
+}
+
+// replace unary expressions with 0 (-2 &gt; 0-2)
+func (e *equationModel) replaceUnary(str string) string <span class="cov7" title="9057">{
+        var retStr string
+        var flagIn bool
+        s := strings.ToLower(str)
+        for i, char := range s </span><span class="cov9" title="185028">{
+                if char == ' ' </span><span class="cov4" title="85">{
+                        continue</span>
+                }
+                <span class="cov9" title="184943">if len(retStr) == 0 &amp;&amp; (char == '-' || char == '+') </span><span class="cov5" title="605">{
+                        retStr += "(0" + string(char)
+                        flagIn = true
+                }</span> else<span class="cov9" title="184338"> if (char == '+' || char == '-') &amp;&amp; (len(retStr) &gt; 1 &amp;&amp; retStr[len(retStr)-1:] == "(") </span><span class="cov6" title="2912">{
+                        retStr += "(0" + string(char)
+                        flagIn = true
+                }</span> else<span class="cov9" title="181426"> if flagIn &amp;&amp; strings.Contains(")(^+-*/", string(char)) </span><span class="cov6" title="2916">{
+                        retStr += ")" + string(char)
+                        flagIn = false
+                }</span> else<span class="cov9" title="178510"> if flagIn &amp;&amp; len(str) == i+1 </span><span class="cov5" title="601">{
+                        retStr += string(char) + ")"
+                        flagIn = false
+                }</span> else<span class="cov9" title="177909"> {
+                        retStr += string(char)
+                }</span>
+        }
+        <span class="cov7" title="9057">return retStr</span>
+}
+
+// insert spaces between expressions
+func (e *equationModel) insertSpases(str string) string <span class="cov7" title="9058">{
+        var retStr string
+        s := strings.ToLower(str)
+
+        // Insert space beetwin elems
+        for _, char := range s </span><span class="cov9" title="195506">{
+                if char == ' ' </span><span class="cov2" title="6">{
+                        continue</span>
+                }
+                <span class="cov9" title="195500">if unicode.IsDigit(char) || unicode.IsLetter(char) || char == '.' || (len(retStr) &gt; 1 &amp;&amp; retStr[len(retStr)-1:] == "e") </span><span class="cov9" title="139720">{
+                        retStr += string(char)
+                }</span> else<span class="cov8" title="55780"> if strings.Contains(")(^+-*/", string(char)) </span><span class="cov8" title="55779">{
+                        retStr += " " + string(char) + " "
+                        // } else if char == 'm' {
+                        //         retStr += " " + string(char)
+                        // } else if char == 'd' {
+                        //         retStr += string(char) + " "
+                }</span> else<span class="cov1" title="1"> {
+                        retStr += string(char) + " "
+                }</span>
+
+        }
+        <span class="cov7" title="9058">t.Clg.DeepDebug(fmt.Sprint("_insertSpaces_ after spaces added:", retStr))
+
+        // Insert zero before dot in the begining
+        if string(retStr[0:1]) == "." &amp;&amp; strings.Contains("0123456789", string(retStr[1:2])) </span><span class="cov1" title="1">{
+                retStr = fmt.Sprint("0" + retStr)
+        }</span>
+        // Insert zero before dot in the middle
+        <span class="cov7" title="9058">for i := 0; i &lt; len(retStr)-2; i++ </span><span class="cov10" title="288966">{
+                if string(retStr[i:i+1]) == " " &amp;&amp; string(retStr[i+1:i+2]) == "." &amp;&amp; strings.Contains("0123456789", string(retStr[i+2:i+3])) </span><span class="cov1" title="2">{
+                        retStr = fmt.Sprint(retStr[0:i+1] + "0" + string(retStr[i+1:]))
+                }</span>
+        }
+        <span class="cov7" title="9058">t.Clg.DeepDebug(fmt.Sprint("_insertSpaces_ after zero added:", retStr))
+        return retStr</span>
+}
+
+// Convert infix to Poland notation
+func (e *equationModel) toPolandNotation(strArr []string) (expression []string) <span class="cov7" title="9052">{
+        var stack []string
+        precedence := map[string]int{
+                "+":    1,
+                "-":    1,
+                "mod":  3, // % (остаток от деления)
+                "*":    4,
+                "/":    4,
+                "^":    5,
+                "cos":  6,
+                "sin":  6,
+                "tan":  6,
+                "acos": 6,
+                "asin": 6,
+                "atan": 6,
+                "sqrt": 6,
+                "ln":   6,
+                "log":  6,
+                "(":    7,
+                "{":    7,
+                "[":    7,
+        }
+        open_brackets := "({["
+        close_brackets := ")}]"
+        operators := "+-^*/modacosasinatansqrtlnlog"
+        for _, char := range strArr </span><span class="cov9" title="81618">{
+                switch </span>{
+                case char != "" &amp;&amp; char[0] &gt;= '0' &amp;&amp; char[0] &lt;= '9':<span class="cov8" title="24056">
+                        expression = append(expression, string(char))</span>
+                case strings.Contains(operators, char):<span class="cov7" title="16210">
+                        lenght := len(stack)
+                        if lenght == 0 || stack[lenght-1] == "(" </span><span class="cov7" title="11371">{
+                                stack = append(stack, string(char))
+                        }</span> else<span class="cov7" title="4839"> {
+                                for </span><span class="cov7" title="7862">{
+                                        if lenght &gt; 0 &amp;&amp; char != "" &amp;&amp; precedence[char] &lt;= precedence[stack[lenght-1]] &amp;&amp; stack[lenght-1] != "(" </span><span class="cov6" title="3023">{
+                                                expression = append(expression, stack[lenght-1])
+                                                stack[lenght-1] = ""
+                                                stack = stack[:lenght-1]
+                                                lenght = len(stack)
+                                        }</span> else<span class="cov7" title="4839"> {
+                                                if char != "" &amp;&amp; char != ")" </span><span class="cov7" title="4839">{
+                                                        stack = append(stack, char)
+                                                }</span>
+                                                <span class="cov7" title="4839">break</span>
+                                        }
+                                }
+                        }
+                case strings.Contains(open_brackets, char):<span class="cov8" title="20375">
+                        stack = append(stack, string(char))</span>
+                case strings.Contains(close_brackets, char):<span class="cov8" title="20375">
+                        lenght := len(stack)
+                        for </span><span class="cov8" title="23898">{
+                                if strings.Contains(open_brackets, stack[lenght-1]) </span><span class="cov8" title="20375">{
+                                        break</span>
+                                }
+                                <span class="cov6" title="3523">expression = append(expression, stack[lenght-1])
+                                stack[lenght-1] = ""
+                                stack = stack[:lenght-1]
+                                lenght = len(stack)</span>
+                        }
+                        <span class="cov8" title="20375">if char == ")" </span><span class="cov8" title="20375">{
+                                stack[lenght-1] = ""
+                                stack = stack[:lenght-1]
+                        }</span>
+                default:<span class="cov5" title="602">
+                        break</span>
+                }
+        }
+        <span class="cov7" title="9052">if len(stack) &gt; 0 </span><span class="cov7" title="7850">{
+                lenght := len(stack)
+                for </span><span class="cov7" title="17514">{
+                        if lenght == 0 </span><span class="cov7" title="7850">{
+                                break</span>
+                        }
+                        <span class="cov7" title="9664">expression = append(expression, stack[lenght-1])
+                        stack[lenght-1] = ""
+                        stack = stack[:lenght-1]
+                        lenght = len(stack)</span>
+                }
+        }
+        <span class="cov7" title="9052">return</span>
+}
+
+// Calculate expression in poland notation
+func (e *equationModel) calculate(expression []string) (float64, error) <span class="cov7" title="9076">{
+        operators := "+-^*/modacosasinatansqrtlnlog"
+        unaryop := "acosasinatansqrtlnlog"
+        var stack []float64
+        var err error = nil
+
+        t.Clg.DeepDebug(fmt.Sprint("_calculate_  expression:", expression))
+        for i, val := range expression </span><span class="cov8" title="40358">{
+                t.Clg.DeepDebug(fmt.Sprintf("_calculate_  expression i = %d, val = %s", i, val))
+                var temp float64
+                if strings.Contains(operators, val) </span><span class="cov7" title="16260">{
+                        t.Clg.DeepDebug(fmt.Sprintf("_calculate_  contains %s in operators", val))
+                        if len(stack) &lt; 2 </span><span class="cov6" title="1222">{
+                                if strings.Contains(unaryop, val) </span><span class="cov6" title="1220">{
+                                        t.Clg.DeepDebug(fmt.Sprintf("_calculate_ stack unary up=%v", stack))
+                                        lenght := len(stack)
+                                        n1 := stack[lenght-1]
+                                        stack = stack[:lenght-1]
+                                        switch </span>{
+                                        case val == "cos":<span class="cov6" title="1202">
+                                                temp = math.Cos(n1 * math.Pi / 180)</span>
+                                        case val == "sin":<span class="cov1" title="1">
+                                                temp = math.Sin(n1 * math.Pi / 180)</span>
+                                        case val == "tan":<span class="cov1" title="2">
+                                                temp = math.Tan(n1 * math.Pi / 180)</span>
+                                        case val == "acos":<span class="cov1" title="1">
+                                                temp = math.Acos(n1) * 180 / math.Pi</span>
+                                        case val == "asin":<span class="cov1" title="1">
+                                                temp = math.Asin(n1) * 180 / math.Pi</span>
+                                        case val == "atan":<span class="cov1" title="2">
+                                                temp = math.Atan(n1) * 180 / math.Pi</span>
+                                        case val == "sqrt":<span class="cov1" title="4">
+                                                temp = math.Sqrt(n1)</span>
+                                        case val == "ln":<span class="cov1" title="2">
+                                                temp = math.Log(n1)</span>
+                                        case val == "log":<span class="cov2" title="5">
+                                                temp = math.Log10(n1)</span>
+                                        }
+                                        <span class="cov6" title="1220">stack = append(stack, temp)
+                                        continue</span>
+                                } else<span class="cov1" title="2"> {
+                                        err = errors.New("Too few arguments")
+                                        break</span>
+                                }
+                        }
+                        <span class="cov7" title="15038">lenght := len(stack)
+                        n1 := stack[lenght-1]
+                        stack = stack[:lenght-1]
+                        lenght = len(stack)
+                        n2 := stack[lenght-1]
+                        stack = stack[:lenght-1]
+                        switch </span>{
+                        case val == "+":<span class="cov5" title="638">
+                                temp = n2 + n1</span>
+                        case val == "-":<span class="cov7" title="5330">
+                                temp = n2 - n1</span>
+                        case val == "^":<span class="cov6" title="3617">
+                                temp = math.Pow(n2, n1)</span>
+                        case val == "*":<span class="cov6" title="3026">
+                                temp = n2 * n1</span>
+                        case val == "mod":<span class="cov1" title="1">
+                                temp = float64(int(n2) % int(n1))</span>
+                        case val == "/":<span class="cov6" title="2408">
+                                if n1 == 0 </span><span class="cov1" title="4">{
+                                        err = errors.New("Error: division by zero")
+                                        break</span>
+                                }
+                                <span class="cov6" title="2404">temp = n2 / n1</span>
+                        case val == "cos":<span class="cov1" title="2">
+                                stack = append(stack, n2)
+                                temp = math.Cos(n1 * math.Pi / 180)</span>
+                        case val == "sin":<span class="cov1" title="3">
+                                stack = append(stack, n2)
+                                temp = math.Sin(n1 * math.Pi / 180)</span>
+                        case val == "tan":<span class="cov1" title="2">
+                                stack = append(stack, n2)
+                                temp = math.Tan(n1 * math.Pi / 180)</span>
+                        case val == "acos":<span class="cov1" title="2">
+                                stack = append(stack, n2)
+                                temp = math.Acos(n1) * 180 / math.Pi</span>
+                        case val == "asin":<span class="cov1" title="2">
+                                stack = append(stack, n2)
+                                temp = math.Asin(n1) * 180 / math.Pi</span>
+                        case val == "atan":<span class="cov1" title="2">
+                                stack = append(stack, n2)
+                                temp = math.Atan(n1) * 180 / math.Pi</span>
+                        case val == "sqrt":<span class="cov1" title="2">
+                                stack = append(stack, n2)
+                                temp = math.Sqrt(n1)</span>
+                        case val == "ln":<span class="cov1" title="1">
+                                stack = append(stack, n2)
+                                temp = math.Log(n1)</span>
+                        case val == "log":<span class="cov1" title="2">
+                                stack = append(stack, n2)
+                                temp = math.Log10(n1)</span>
+                        }
+                        <span class="cov7" title="15038">stack = append(stack, temp)
+                        t.Clg.DeepDebug(fmt.Sprintf("_calculate_ stack=%v", stack))</span>
+                } else<span class="cov8" title="24098"> {
+                        if num, err := strconv.ParseFloat(val, 64); err == nil </span><span class="cov8" title="24097">{
+                                stack = append(stack, num)
+                        }</span> else<span class="cov1" title="1"> {
+                                err = fmt.Errorf("Error in strconv: %v", err)
+                                return float64(0), err
+                        }</span>
+                }
+        }
+        <span class="cov7" title="9075">return stack[0], err</span>
+}
+
+// Common function of calculate with input prepared string (with unary and spaces)
+func (e *equationModel) startCalculate(str string) (rez float64, err error) <span class="cov7" title="9050">{
+        return e.calculate(e.toPolandNotation(strings.Fields(str)))
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package model
+
+import (
+        "errors"
+        "fmt"
+        "image"
+        "image/color"
+        "image/draw"
+        d "smartCalc/domains"
+        // t "smartCalc/tools"
+        "strconv"
+        "strings"
+)
+
+type SCoordinates struct {
+        err bool
+        x   float64
+        y   float64
+}
+
+type graphResultModel struct {
+        yGraphMin, yGraphMax float64
+        pixelData            []SCoordinates
+        graphImage           draw.Image
+}
+
+type graphModel struct {
+        err error
+
+        equalValue                         string  // string of equal for equal or graph
+        xFromStr, xToStr, yFromStr, yToStr string  // raw data
+        xFrom, xTo, yFrom, yTo             float64 // border Value for graph
+        preparedEquation                   string
+        gRM                                graphResultModel
+        equal                              equalModel
+        config                             *d.Cfg
+}
+
+//---------- New object and interface implementing
+
+func (m *CalcModel) NewGraph(in ModelsInput) *graphModel <span class="cov9" title="34">{
+        var graph graphModel
+        graph.equalValue = in.ModelGraphData.EqualValue
+        graph.xFromStr = in.ModelGraphData.XFromStr
+        graph.xToStr = in.ModelGraphData.XToStr
+        graph.yFromStr = in.ModelGraphData.YFromStr
+        graph.yToStr = in.ModelGraphData.YToStr
+        if graph.entrysGraphCheck(in) </span><span class="cov5" title="7">{
+                graph.err = errors.New("Invalid graphborder data")
+        }</span>
+
+        //update inputData for Creating Equal object
+        <span class="cov9" title="34">in.ModelEqualData.EqualValue = in.ModelGraphData.EqualValue
+        in.ModelEqualData.XEqualStr = in.ModelGraphData.XFromStr
+        graph.equal = *NewEqual(in)
+        graph.config = m.Config
+        return &amp;graph</span>
+}
+
+// Check and copy input data for graph
+func (g *graphModel) entrysGraphCheck(in ModelsInput) bool <span class="cov10" title="48">{
+        var err error
+
+        if g.xFrom, err = strconv.ParseFloat(in.ModelGraphData.XFromStr, 64); err != nil </span><span class="cov1" title="1">{
+                return true
+        }</span> else<span class="cov9" title="47"> if g.xTo, err = strconv.ParseFloat(in.ModelGraphData.XToStr, 64); err != nil </span><span class="cov2" title="2">{
+                return true
+        }</span> else<span class="cov9" title="45"> if g.yFrom, err = strconv.ParseFloat(in.ModelGraphData.YFromStr, 64); err != nil </span><span class="cov1" title="1">{
+                return true
+        }</span> else<span class="cov9" title="44"> if g.yTo, err = strconv.ParseFloat(in.ModelGraphData.YToStr, 64); err != nil </span><span class="cov1" title="1">{
+                return true
+        }</span> else<span class="cov9" title="43"> if strings.EqualFold(in.ModelGraphData.EqualValue, "") </span><span class="cov2" title="2">{
+                return true
+        }</span>
+
+        <span class="cov9" title="41">positionMinMax(&amp;g.xFrom, &amp;g.xTo)
+        positionMinMax(&amp;g.yFrom, &amp;g.yTo)
+
+        if g.yTo == g.yFrom || g.xTo == g.xFrom ||
+                g.yFrom &lt; -1000000 || g.xFrom &lt; -1000000 ||
+                g.yTo &gt; 1000000 || g.xTo &gt; 1000000 </span><span class="cov6" title="12">{
+                return true
+        }</span>
+        <span class="cov8" title="29">return false</span>
+}
+
+func (g *graphModel) setError(out *ModelsOutput) *ModelsOutput <span class="cov3" title="3">{
+        out.Err = true
+        out.ModelGraphResult.Err = true
+        out.ModelGraphResult.ResultStr = "Error"
+        return out
+}</span>
+
+// Implementing request interface for graphModel
+func (g *graphModel) GetResult() (out ModelsOutput) <span class="cov5" title="8">{
+        out.Mode = 2
+        out.ModelGraphResult.Mode = 2
+
+        if g.err != nil || g.graphPrepareString() </span><span class="cov3" title="3">{
+                return *g.setError(&amp;out)
+        }</span>
+
+        <span class="cov4" title="5">g.calculateData()
+        g.graphImageBuild()
+        out.ModelGraphResult.ResultStr = fmt.Sprintf("Y {%.2f .. %.2f}", g.gRM.yGraphMin, g.gRM.yGraphMax)
+
+        out.ModelGraphResult.GraphImage = g.gRM.graphImage
+        // if t.ExportImageToPng(g.gRM.graphImage, g.config.TempFileDir+g.config.TempGraph) != nil {
+        //         return *g.setError(&amp;out)
+        // }
+
+        return</span>
+}
+
+// Creating Image with graph
+func (g *graphModel) graphImageBuild() <span class="cov5" title="8">{
+
+        // Create New Image RGBA object
+        g.gRM.graphImage = image.NewRGBA(image.Rect(0, 0, int(g.config.XWindowGraph), int(g.config.YWindowGraph)))
+
+        // Fill white background
+        g.fillBackground(g.gRM.graphImage, color.White)
+
+        // Draw Grid for graph
+        g.graphGridDraw(g.gRM.graphImage)
+
+        // Draw graph
+        g.graphDraw()
+
+        // Draw additional graph information to image
+        g.drawEqualText(g.gRM.graphImage, 20, 30, g.createEqualText())
+
+        // Draw Logo to image
+        g.drawLogo(g.gRM.graphImage, 21, "CleverCalc")
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package model
+
+import (
+        "math"
+)
+
+// graph prepared string - check and stapples(without replace X)
+func (g *graphModel) graphPrepareString() bool <span class="cov4" title="22">{
+        g.equal.equation.equation = g.equalValue
+        if str, err := g.equal.equation.onlyCheck(); err != nil </span><span class="cov2" title="5">{
+                return true
+        }</span> else<span class="cov3" title="17"> {
+                // g.preparedEquation = str
+                g.preparedEquation = g.equal.addStaplesForX(str)
+        }</span>
+        <span class="cov3" title="17">return false</span>
+}
+
+// calculate pixels data for graph (requared g.preparedEquation)
+func (g *graphModel) calculateData() <span class="cov3" title="15">{
+
+        // find gap between pixels
+        var deltaPixel float64 = math.Abs(g.xFrom-g.xTo) / float64(g.config.XWindowGraph)
+        var xr float64
+
+        // filling pixels array with calculated data
+        for x := math.Min(g.xFrom, g.xTo); x &lt;= math.Max(g.xFrom, g.xTo); x += deltaPixel </span><span class="cov10" title="9012">{
+                xr = x
+                if (x &lt; 0.00001 &amp;&amp; x &gt; 0) || (x &gt; 0-0.00001 &amp;&amp; x &lt; 0) </span><span class="cov2" title="7">{
+                        xr = 0
+                }</span>
+                <span class="cov10" title="9012">g.gRM.pixelData = append(g.gRM.pixelData, g.equal.calculate(g.preparedEquation, xr))</span>
+        }
+
+        // find MIN and MAX in Y
+        <span class="cov3" title="15">for _, val := range g.gRM.pixelData </span><span class="cov10" title="9012">{
+                if !val.err </span><span class="cov9" title="8712">{
+                        g.gRM.yGraphMin = math.Min(g.gRM.yGraphMin, val.y)
+                        g.gRM.yGraphMax = math.Max(g.gRM.yGraphMax, val.y)
+
+                }</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package model
+
+import (
+        "fmt"
+        "image/color"
+        "math"
+        t "smartCalc/tools"
+)
+
+// Draw graph line at the sCoordinates Array
+func (g *graphModel) graphDraw() <span class="cov3" title="11">{
+
+        // Init variable
+        var (
+                oldErr    bool                                                               // exist old pixel flag
+                pixelOldY int                                                                // Y of old pixel
+                sdvig     int     = g.graphGridFindValue(0, "Y")                             // find place of ZeroLine
+                deltaY    float64 = float64(g.config.YWindowGraph) / math.Abs(g.yFrom-g.yTo) // quantity of pixel to 1 of Y
+        )
+
+        t.Clg.Debug(fmt.Sprintf("_graphDraw_ sdvig = %d, deltaY = %.5f", sdvig, deltaY))
+
+        // draw graph with circle
+        for i, value := range g.gRM.pixelData </span><span class="cov10" title="6608">{
+
+                // if pixel have err==true, skip drawing
+                if value.err </span><span class="cov6" title="300">{
+                        oldErr = true
+                        continue</span>
+                }
+                <span class="cov9" title="6308">t.Clg.DeepDebug(fmt.Sprintf("_graphDraw_ pixel: I=%d Err=%v X=%.5f Y=%.5f", i, value.err, value.x, value.y))
+
+                // find y coordinate for draw graph
+                y := int(0 - (value.y * deltaY) + float64(sdvig))
+                // t.Clg.DeepDebug(fmt.Sprintf("_graphDraw_ Image Y = %d", y))
+
+                // cut y beyond canvas
+                if y &lt; 0 </span><span class="cov9" title="3787">{
+                        y = -1
+                }</span> else<span class="cov9" title="2521"> if y &gt;= int(g.config.YWindowGraph) </span><span class="cov7" title="601">{
+                        y = int(g.config.YWindowGraph) + 1
+                }</span>
+
+                // if y in windowgraph - draw pixel
+                <span class="cov9" title="6308">if y &gt; 0-10 &amp;&amp; y &lt; int(g.config.YWindowGraph)+10 </span><span class="cov9" title="6308">{
+                        g.gRM.graphImage.Set(i, y, color.RGBA{R: 0x9D, A: 0xFF})
+
+                        // if nessesary, draw vertical line
+                        if i != 0 </span><span class="cov9" title="6297">{
+                                if math.Abs(float64(pixelOldY-y)) &gt;= 1.5 &amp;&amp; !oldErr </span><span class="cov7" title="754">{
+                                        g.drawVLine(g.gRM.graphImage, 1, int(math.Abs(float64(pixelOldY-y)))-1, i-1, int(math.Min(float64(pixelOldY), float64(y))), color.RGBA{R: 0x9D, A: 0xFF})
+                                }</span>
+                        }
+                }
+
+                // remember pixel for next vertical line
+                <span class="cov9" title="6308">pixelOldY = y
+                oldErr = false</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package model
+
+import (
+        "fmt"
+        "image/color"
+        "image/draw"
+        "math"
+        t "smartCalc/tools"
+        "strconv"
+)
+
+// Draw grid for graph image
+func (g *graphModel) graphGridDraw(img draw.Image) <span class="cov2" title="8">{
+
+        // Set variable for print vertical grid lines
+        sideModeX := g.checkSideModeArrow(g.yFrom, g.yTo, int(g.config.YWindowGraph))
+        masshtabX := g.findMasshtab(g.xFrom, g.xTo)
+        arr := g.findGridValue(masshtabX, g.xFrom, g.xTo)
+
+        // Print vertical grid lines
+        for _, val := range arr </span><span class="cov3" title="66">{
+                if val == 0 </span><span class="cov2" title="12">{
+                        t.Clg.DeepDebug(fmt.Sprint("_graphGridDraw_ g.graphGridFindX(0)=", g.graphGridFindValue(0, "X")))
+                        g.arrowV(img, g.graphGridFindValue(0, "X"), 7, color.Gray{Y: uint8(0)})
+                        g.drawVLine(img, 2, int(g.config.YWindowGraph)-20, g.graphGridFindValue(val, "X"), 10, color.Gray{Y: uint8(0)})
+                }</span> else<span class="cov3" title="54"> {
+                        g.drawVLine(img, 1, int(g.config.YWindowGraph)-20, g.graphGridFindValue(val, "X"), 10, color.Gray{Y: uint8(125)})
+                }</span>
+                <span class="cov3" title="66">g.printGridValueX(img, masshtabX, val, sideModeX)</span>
+        }
+
+        // Set variable for print horisontal grid lines
+        <span class="cov2" title="8">masshtabY := g.findMasshtab(g.yFrom, g.yTo)
+        sideModeY := g.checkSideModeArrow(g.xFrom, g.xTo, int(g.config.XWindowGraph))
+        arr = g.findGridValue(masshtabY, g.yFrom, g.yTo)
+
+        // Print vertical grid lines
+        for _, val := range arr </span><span class="cov3" title="65">{
+                if val == 0 </span><span class="cov2" title="12">{
+                        t.Clg.DeepDebug(fmt.Sprint("_graphGridDraw_ g.graphGridFindY(0)=", g.graphGridFindValue(0, "Y")))
+                        g.drawHLine(img, 2, int(g.config.XWindowGraph)-20, 10, g.graphGridFindValue(val, "Y"), color.Gray{Y: uint8(0)})
+                        g.arrowH(img, int(g.config.XWindowGraph)-7, g.graphGridFindValue(0, "Y"), color.Gray{Y: uint8(0)})
+                }</span> else<span class="cov3" title="53"> {
+                        g.drawHLine(img, 1, int(g.config.XWindowGraph)-20, 10, g.graphGridFindValue(val, "Y"), color.Gray{Y: uint8(125)})
+                }</span>
+                <span class="cov3" title="65">g.printGridValueY(img, masshtabY, val, sideModeY)</span>
+        }
+
+        // Print masshtab
+        <span class="cov2" title="8">g.masshtabDraw(img, masshtabX, masshtabY, int(g.config.XWindowGraph)-int(g.config.XWindowGraph)/6, int(g.config.YWindowGraph)-50)</span>
+}
+
+// Drawing masshtab
+func (g *graphModel) masshtabDraw(img draw.Image, masshtabX, masshtabY float64, x0, y0 int) <span class="cov2" title="12">{
+        xLine := g.graphGridFindValue(g.xFrom+masshtabX, "X") - g.graphGridFindValue(g.xFrom, "X")
+        t.Clg.DeepDebug(fmt.Sprint("_masshtabDraw_ xLine for masshtab:", xLine))
+        g.drawHLine(img, 3, int(xLine), x0-int(xLine)/2, y0, color.Gray{Y: uint8(0)})
+        g.drawEqualText(img, x0-20, y0+25, fmt.Sprint("X: ", masshtabX))
+
+        yLine := int(math.Abs(float64(g.graphGridFindValue(g.yFrom+masshtabY, "Y") - g.graphGridFindValue(g.yFrom, "Y"))))
+        t.Clg.DeepDebug(fmt.Sprint("_masshtabDraw_ yLine for masshtab:", yLine))
+        g.drawVLine(img, 3, int(yLine), x0, y0-int(yLine), color.Gray{Y: uint8(0)})
+        g.drawEqualText(img, x0+10, y0+50-int(yLine), fmt.Sprint("Y: ", masshtabY))
+}</span>
+
+//---------------------------Calculate Grid
+
+// Create Array of X or Y
+func (g *graphModel) createArrayValue(min, max, size float64) (arr []float64) <span class="cov5" title="531">{
+        positionMinMax(&amp;min, &amp;max)
+        var deltaPixel float64 = (max - min) / (size)
+        for i := min; i &lt; max; i += deltaPixel </span><span class="cov10" title="317848">{
+                arr = append(arr, i)
+        }</span>
+
+        <span class="cov5" title="531">return</span>
+}
+
+// Check sidemode (when line with arrow close to border)
+func (g *graphModel) checkSideModeArrow(min, max float64, size int) bool <span class="cov3" title="24">{
+        var tempDelta float64 = 2000000
+        var Finded int
+
+        arr := g.createArrayValue(min, max, float64(size-1))
+
+        for i, val := range arr </span><span class="cov7" title="14389">{
+                if math.Abs(0-val) &lt; tempDelta </span><span class="cov6" title="4485">{
+                        tempDelta = math.Abs(0 - val)
+                        Finded = i
+                }</span>
+        }
+
+        <span class="cov3" title="24">if Finded &lt; 100 || Finded &gt; 500 </span><span class="cov2" title="9">{
+                return true
+        }</span>
+
+        <span class="cov2" title="15">return false</span>
+}
+
+// Place min to min, max to max
+func positionMinMax(min, max *float64) <span class="cov5" title="638">{
+        if *max &lt; *min </span><span class="cov1" title="3">{
+                temp := *min
+                *min = *max
+                *max = temp
+        }</span>
+}
+
+// finding X or Y Values for grid lines
+func (g *graphModel) findGridValue(masshtab, from, to float64) (arr []float64) <span class="cov3" title="20">{
+
+        positionMinMax(&amp;from, &amp;to)
+
+        // add zero arrow
+        if to == 0 || from == 0 || (from &lt; 0 &amp;&amp; to &gt; 0) </span><span class="cov2" title="15">{
+                arr = append(arr, 0)
+        }</span>
+
+        // find value from - to +
+        <span class="cov3" title="20">if (from &lt; 0 &amp;&amp; to &gt; 0) || to &lt;= 0 </span><span class="cov2" title="14">{
+                for x := masshtab * math.Round(from/masshtab); x &lt; to; x += masshtab </span><span class="cov4" title="114">{
+                        arr = append(arr, x)
+                }</span>
+
+                // find value from + to -
+        } else<span class="cov2" title="6"> if from &gt;= 0 </span><span class="cov2" title="6">{
+                for x := masshtab * math.Round(to/masshtab); x &gt; from; x -= masshtab </span><span class="cov3" title="36">{
+                        arr = append(arr, x)
+                }</span>
+        }
+
+        // fmt.Println("arr", arr, "masshtab:", masshtab)
+        <span class="cov3" title="20">return</span>
+}
+
+// finding masshtab for grid
+func (g *graphModel) findMasshtab(min, max float64) float64 <span class="cov3" title="32">{
+        volume := math.Abs(max - min)
+        for x := 0.01; x &lt;= 1000000; x *= 10 </span><span class="cov4" title="129">{
+                if volume/x &lt; 10 &amp;&amp; volume/x &gt;= 5 </span><span class="cov2" title="12">{
+                        return x
+                }</span> else<span class="cov4" title="117"> if volume/x &lt; 5 &amp;&amp; volume/x &gt;= 2 </span><span class="cov2" title="8">{
+                        return x / 2
+                }</span> else<span class="cov4" title="109"> if volume/x &lt; 2 </span><span class="cov2" title="9">{
+                        return x / 5
+                }</span>
+        }
+
+        <span class="cov1" title="3">return 1000000</span>
+}
+
+// finding pixel place for value X or Y
+func (g *graphModel) graphGridFindValue(v0 float64, mode string) (Finded int) <span class="cov5" title="507">{
+        arr := []float64{}
+        var modeValue int //-1 for to &lt; 0, +1 for from &gt; 0, 0 for to &gt;  &amp;&amp; from &lt; 0
+
+        // Creating array of X or Y according mode
+        switch mode </span>{
+        case "X":<span class="cov4" title="248">
+                arr = g.createArrayValue(g.xFrom, g.xTo, float64(g.config.XWindowGraph))</span>
+        case "Y":<span class="cov4" title="257">
+                arr = g.createArrayValue(g.yFrom, g.yTo, float64(g.config.YWindowGraph))</span>
+        default:<span class="cov1" title="2">
+                return 0</span>
+        }
+
+        // Gap calculation beetwin the closest points in array
+        <span class="cov5" title="505">deltaValue := math.Abs(arr[1] - arr[2])
+        t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, deltaValue: |%.5f|", mode, v0, deltaValue))
+
+        // Detection modeValue
+        if arr[0] &gt; 0 </span><span class="cov3" title="54">{
+                modeValue = 1
+        }</span> else<span class="cov5" title="451"> if arr[len(arr)-1] &lt; 0 </span><span class="cov1" title="4">{
+                modeValue = -1
+        }</span>
+
+        // Find
+        <span class="cov5" title="505">t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, modeValue: |%d|", mode, modeValue))
+        if v0 == 0 &amp;&amp; modeValue != 0 </span><span class="cov1" title="3">{
+                switch modeValue </span>{
+                case -1:<span class="cov1" title="1">
+                        Finded = 0 - int((0-arr[len(arr)-1])/deltaValue)</span>
+                case 1:<span class="cov1" title="2">
+                        Finded = int(g.config.YWindowGraph) - int(0-arr[0]/deltaValue)</span>
+                }
+        } else<span class="cov5" title="502"> {
+                var tempDelta float64 = 2000000
+                for i, val := range arr </span><span class="cov9" title="301639">{
+                        if math.Abs(v0-val) &lt; tempDelta </span><span class="cov9" title="124906">{
+                                tempDelta = math.Abs(v0 - val)
+                                Finded = i
+                        }</span>
+                }
+
+                <span class="cov5" title="502">if mode == "Y" </span><span class="cov4" title="254">{
+                        Finded = int(g.config.YWindowGraph) - Finded
+                }</span>
+        }
+        <span class="cov5" title="505">t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, Finded))
+        return</span>
+
+        // switch mode {
+        // case "X":
+        //         t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, Finded))
+        //         return
+        // case "Y":
+        //         if v0 == 0 &amp;&amp; modeValue == 1 {
+        //                 t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, int(g.config.YWindowGraph)-Finded))
+        //                 return int(g.config.YWindowGraph) - Finded
+        //         } else if v0 == 0 &amp;&amp; modeValue == -1 {
+        //                 t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, 0-Finded))
+        //                 return 0 - Finded
+        //         }
+        //         return int(g.config.YWindowGraph) - Finded
+        // default:
+        //         return 0
+        // }
+
+        // t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, modeValue: |%d|", mode, modeValue))
+        // if v0 == 0 &amp;&amp; modeValue != 0 {
+        //         switch modeValue {
+        //         case -1:
+        //                 Finded = int((0 - arr[len(arr)-1]) / deltaValue)
+        //         case 1:
+        //                 Finded = int(0 - arr[0]/deltaValue)
+        //         }
+        // } else {
+        //         var tempDelta float64 = 2000000
+        //         for i, val := range arr {
+        //                 if math.Abs(v0-val) &lt; tempDelta {
+        //                         tempDelta = math.Abs(v0 - val)
+        //                         Finded = i
+        //                 }
+        //         }
+        // }
+
+        // switch mode {
+        // case "X":
+        //         t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, Finded))
+        //         return
+        // case "Y":
+        //         if v0 == 0 &amp;&amp; modeValue == 1 {
+        //                 t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, int(g.config.YWindowGraph)-Finded))
+        //                 return int(g.config.YWindowGraph) - Finded
+        //         } else if v0 == 0 &amp;&amp; modeValue == -1 {
+        //                 t.Clg.DeepDebug(fmt.Sprintf("_graphGridFindValue_ mode: |%s|, v0: |%.3f|, Finded: |%d|", mode, v0, 0-Finded))
+        //                 return 0 - Finded
+        //         }
+        //         return int(g.config.YWindowGraph) - Finded
+        // default:
+        //         return 0
+        // }
+}
+
+// formatting Grid value for print
+func (g *graphModel) prepareGridValue(masshtab, val float64) (printNumber string) <span class="cov4" title="148">{
+        if masshtab &lt; 0.01 </span><span class="cov1" title="4">{
+                printNumber = strconv.FormatFloat(val, 'f', 3, 64)
+        }</span> else<span class="cov4" title="144"> if masshtab &lt; 1 </span><span class="cov3" title="21">{
+                printNumber = strconv.FormatFloat(val, 'f', 2, 64)
+        }</span> else<span class="cov4" title="123"> {
+                printNumber = strconv.FormatFloat(val, 'f', 0, 64)
+        }</span>
+        <span class="cov4" title="148">return printNumber</span>
+}
+
+// Printing Grid value for Y
+func (g *graphModel) printGridValueY(img draw.Image, masshtabY, val float64, sideModeY bool) <span class="cov4" title="71">{
+
+        printNumber := g.prepareGridValue(masshtabY, val)
+        if sideModeY </span><span class="cov2" title="13">{
+                g.drawGridText(img, 50, g.graphGridFindValue(val, "Y"), printNumber)
+        }</span> else<span class="cov3" title="58"> {
+                g.drawGridText(img, g.graphGridFindValue(0, "X"), g.graphGridFindValue(val, "Y"), printNumber)
+        }</span>
+}
+
+// Printing Grid value for X
+func (g *graphModel) printGridValueX(img draw.Image, masshtabX, val float64, sideModeX bool) <span class="cov4" title="72">{
+        printNumber := g.prepareGridValue(masshtabX, val)
+        if sideModeX </span><span class="cov2" title="14">{
+                g.drawGridText(img, g.graphGridFindValue(val, "X"), 580, printNumber)
+        }</span> else<span class="cov3" title="58"> {
+                g.drawGridText(img, g.graphGridFindValue(val, "X"), g.graphGridFindValue(0, "Y"), printNumber)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package model
+
+import (
+        "image/color"
+        "image/draw"
+)
+
+func (g *graphModel) fillBackground(img draw.Image, c color.Color) <span class="cov2" title="27">{
+        for x := 0; x &lt; int(g.config.XWindowGraph); x++ </span><span class="cov6" title="16200">{
+                for y := 0; y &lt; int(g.config.YWindowGraph); y++ </span><span class="cov10" title="9720000">{
+                        img.Set(x, y, c)
+                }</span>
+        }
+}
+
+// Draw vertical Up arrow
+func (g *graphModel) arrowV(img draw.Image, x0, y0 int, c color.Color) <span class="cov2" title="15">{
+
+        for j := 0; j &lt; 20; j++ </span><span class="cov4" title="300">{
+                for i := -j / 3; i &lt;= j/3; i++ </span><span class="cov5" title="2010">{
+                        img.Set(x0+i, y0+j, c)
+                }</span>
+        }
+}
+
+// Draw horisontal right arrow
+func (g *graphModel) arrowH(img draw.Image, x0, y0 int, c color.Color) <span class="cov2" title="15">{
+        for j := 0; j &lt; 20; j++ </span><span class="cov4" title="300">{
+                for i := -j / 3; i &lt;= j/3; i++ </span><span class="cov5" title="2010">{
+                        img.Set(x0-j, y0+i, c)
+                }</span>
+        }
+}
+
+// Draw vertical line
+func (g *graphModel) drawVLine(img draw.Image, width, heigth, x0, y0 int, c color.Color) <span class="cov4" title="835">{
+        for y := y0; y &lt; int(g.config.YWindowGraph) &amp;&amp; y &lt; y0+heigth; y++ </span><span class="cov6" title="43090">{
+                for i := 0; i &lt; width; i++ </span><span class="cov7" title="55872">{
+                        img.Set(x0+i, y, c)
+                }</span>
+        }
+}
+
+// Draw horisontal line
+func (g *graphModel) drawHLine(img draw.Image, width, lenght, x0, y0 int, c color.Color) <span class="cov3" title="80">{
+        for x := x0; x &lt; int(g.config.XWindowGraph) &amp;&amp; x &lt; x0+lenght; x++ </span><span class="cov6" title="39350">{
+                for i := 0; i &lt; width; i++ </span><span class="cov7" title="52390">{
+                        img.Set(x, y0+i, c)
+                }</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package model
+
+import (
+        "fmt"
+        "image"
+        "image/color"
+        "image/draw"
+        "os"
+
+        "github.com/golang/freetype/truetype"
+        "golang.org/x/image/font"
+        "golang.org/x/image/font/basicfont"
+        "golang.org/x/image/math/fixed"
+
+        t "smartCalc/tools"
+)
+
+// Print Logo at the picture
+func (g *graphModel) drawLogo(dst draw.Image, yBase int, Text string) <span class="cov5" title="11">{
+
+        // Read font from config path
+        fontBytes, err := os.ReadFile(g.config.TypePath)
+        if err != nil </span><span class="cov1" title="1">{
+                t.Clg.Warning(fmt.Sprintf("_drawLogo_ cannot read logo font from path: %s", g.config.TypePath))
+                return
+        }</span>
+
+        // Parce font
+        <span class="cov5" title="10">fnt, err := truetype.Parse(fontBytes)
+        if err != nil </span><span class="cov1" title="1">{
+                t.Clg.Warning(fmt.Sprintf("_drawLogo_ cannot parce font from path: %s: %v", g.config.TypePath, err))
+                return
+        }</span>
+
+        // Create font drawer
+        <span class="cov4" title="9">d := font.Drawer{
+                Dst: dst,
+                Src: image.NewUniform(color.RGBA{G: 0x88, B: 0xAA, A: 0xFF}),
+                Face: truetype.NewFace(fnt, &amp;truetype.Options{
+                        Size: float64(20),
+                        DPI:  72,
+                }),
+        }
+
+        // Calculate draw pisition
+        d.Dot = fixed.Point26_6{
+                X: (fixed.I(int(g.config.XWindowGraph)) - d.MeasureString(Text) - fixed.I(17)),
+                Y: fixed.I((yBase + (36 / 2) - 12)),
+        }
+
+        // Drawing text string
+        d.DrawString(Text)</span>
+}
+
+// Creating text with equal data for image
+func (g *graphModel) createEqualText() string <span class="cov5" title="12">{
+        return fmt.Sprintf("%s  X{%.2f .. %.2f} Y{%.2f .. %.2f}",
+                g.equalValue,
+                g.xFrom,
+                g.xTo,
+                g.gRM.yGraphMin,
+                g.gRM.yGraphMax)
+}</span>
+
+// Print equal data for the graph
+func (g *graphModel) drawEqualText(dst draw.Image, xBase, yBase int, Text string) <span class="cov7" title="33">{
+        d := font.Drawer{
+                Dst:  dst,
+                Src:  image.NewUniform(color.Gray{Y: uint8(125)}),
+                Face: basicfont.Face7x13,
+        }
+        d.Dot = fixed.Point26_6{
+                X: fixed.I(xBase),
+                Y: fixed.I((yBase + (12 / 2) - 12)),
+        }
+        d.DrawString(Text)
+}</span>
+
+// Print Grid value
+func (g *graphModel) drawGridText(dst draw.Image, xBase int, yBase int, Text string) <span class="cov10" title="146">{
+        d := font.Drawer{
+                Dst:  dst,
+                Src:  image.NewUniform(color.Gray{Y: uint8(125)}),
+                Face: basicfont.Face7x13,
+        }
+        d.Dot = fixed.Point26_6{
+                X: (fixed.I(xBase) - d.MeasureString(Text) - fixed.I(5)),
+                Y: fixed.I(int(yBase + 14)),
+        }
+        d.DrawString(Text)
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

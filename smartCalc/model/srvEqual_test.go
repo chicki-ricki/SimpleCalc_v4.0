@@ -18,6 +18,15 @@ var (
 		{"4x^2+3x-2", "-2", "8"},
 		{"log(x^(2)) + 2x", "100", "204"},
 	}
+	testCasesGetResult2 = []struct {
+		s    string
+		xStr string
+		rStr string
+	}{
+		{"x^2 + 16x", "2ecofds", "36"},
+		{"4x^2+3x/(2-2)-2", "-2", "8"},
+		{"log(x^(2)) + 2x", "ln100", "204"},
+	}
 )
 
 func createEqualStruct(s string, xStr string) (r equalModel) {
@@ -87,6 +96,17 @@ func TestGetResult(t *testing.T) {
 	}
 }
 
+func TestGetResult2(t *testing.T) {
+	var r equalModel
+	for _, tc := range testCasesGetResult2 {
+		r = createEqualStruct(tc.s, tc.xStr)
+		out := r.GetResult()
+		if out.Err != true {
+			t.Errorf("Result was incorrect, %v", out)
+		}
+	}
+}
+
 func TestNewEqual(t *testing.T) {
 	in.ModelEqualData.EqualValue = "4x-5"
 	in.ModelEqualData.XEqualStr = "15"
@@ -107,6 +127,12 @@ func TestAddStaplesForX(t *testing.T) {
 		t.Errorf("Result was incorrect, expected %s, actual: %s", "45(3+6)(3-6)", result)
 	}
 	if result := e.addStaplesForX("45x(3+6x)(x-6)"); result != "45*(x)*(3+6*(x))*((x)-6)" {
+		t.Errorf("Result was incorrect, expected %s, actual: %s", "45(3+6)(3-6)", result)
+	}
+	if result := e.addStaplesForX("-x+45x(3+6x)(x-6)"); result != "0-(x)+45*(x)*(3+6*(x))*((x)-6)" {
+		t.Errorf("Result was incorrect, expected %s, actual: %s", "45(3+6)(3-6)", result)
+	}
+	if result := e.addStaplesForX("45x(3+6x)(x-6)56"); result != "45*(x)*(3+6*(x))*((x)-6)*56" {
 		t.Errorf("Result was incorrect, expected %s, actual: %s", "45(3+6)(3-6)", result)
 	}
 }
