@@ -5,8 +5,6 @@ import (
 	"testing"
 )
 
-// var ()
-
 // Creating New CalcModel object
 func TestNewCalcModel(t *testing.T) {
 	r := *NewCalcModel(configCalc)

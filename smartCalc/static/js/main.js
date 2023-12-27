@@ -13,7 +13,6 @@ let
   historyWindow = document.getElementById("historyWindow"),
   historyWindowData = document.getElementById("historyWindowData"),
   clearHistoryButton = document.getElementById("clearHistory"),
-  // graphButton = document.getElementById("graphButton"),
   historyButtons = "",
 
 
@@ -195,11 +194,9 @@ switch (val) {
   case "log":
   case "sqrt":
   case "mod":
-    // pole.innerText = pole.innerText.substr(pole.innerText.length-1)
     if ((!isNaN(pole.innerText.substr(pole.innerText.length-1)) || 
     pole.innerText.substr(pole.innerText.length-1) == "x") && 
     pole.innerText != "0") {
-      // pole.innerText = pole.innerText.substr(pole.innerText.length-1)
       pole.innerText += "*" + val + "(";
     } else if (pole.innerText != "0") {
       pole.innerText += val + "(";

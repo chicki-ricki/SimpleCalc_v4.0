@@ -15,8 +15,7 @@ import (
 
 var (
 	configCalc = d.InitConfig("../conf/smartCalcTest.cfg")
-	// configCalc = d.InitConfig("")
-	calcmodel = NewCalcModel(configCalc)
+	calcmodel  = NewCalcModel(configCalc)
 
 	TestPath = "../test"
 

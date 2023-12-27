@@ -58,7 +58,6 @@ type ModelResultEqual struct {
 	Err       bool   // true = error
 	Mode      int    // calc - 0, equal - 1 or graph - 2
 	ResultStr string // raw data
-	// Result    interface{}
 }
 
 // structure for Ouput Graph data
