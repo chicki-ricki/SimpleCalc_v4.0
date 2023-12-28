@@ -300,7 +300,6 @@ type ModelResultEqual struct {
         Err       bool   // true = error
         Mode      int    // calc - 0, equal - 1 or graph - 2
         ResultStr string // raw data
-        // Result    interface{}
 }
 
 // structure for Ouput Graph data
@@ -431,11 +430,11 @@ func (e *equalModel) calculate(str string, x float64) (pixel SCoordinates) <span
         var err error
         pixel.x = x
         pixel.y, err = e.equation.onlyCalculate(e.equation.prepareString(strings.ReplaceAll(str, "x", strconv.FormatFloat(x, 'f', -1, 64))))
-        if err != nil || math.IsNaN(pixel.y) || math.IsInf(pixel.y, 0) </span><span class="cov6" title="301">{
+        if err != nil || math.IsNaN(pixel.y) || math.IsInf(pixel.y, 0) </span><span class="cov1" title="2">{
                 pixel.err = true
                 return
         }</span>
-        <span class="cov9" title="8714">return</span>
+        <span class="cov9" title="9013">return</span>
 }
 
 // Adding staples and Multi for x and brackets in equal
@@ -567,6 +566,7 @@ func (e *equationModel) onlyCheck() (string, error) <span class="cov3" title="46
 
 // calculate prepared string
 func (e *equationModel) onlyCalculate(str string) (rez float64, err error) <span class="cov7" title="9037">{
+        e.err = nil
         if str != "" </span><span class="cov7" title="9036">{
                 t.Clg.Debug(fmt.Sprintf("_onlyCalculate_ input string:|%s|", str))
                 if rez, err = e.startCalculate(str); err != nil </span><span class="cov2" title="6">{
@@ -651,10 +651,6 @@ func (e *equationModel) insertSpases(str string) string <span class="cov7" title
                         retStr += string(char)
                 }</span> else<span class="cov8" title="55780"> if strings.Contains(")(^+-*/", string(char)) </span><span class="cov8" title="55779">{
                         retStr += " " + string(char) + " "
-                        // } else if char == 'm' {
-                        //         retStr += " " + string(char)
-                        // } else if char == 'd' {
-                        //         retStr += string(char) + " "
                 }</span> else<span class="cov1" title="1"> {
                         retStr += string(char) + " "
                 }</span>
@@ -1046,7 +1042,7 @@ func (g *graphModel) calculateData() <span class="cov3" title="15">{
 
         // find MIN and MAX in Y
         <span class="cov3" title="15">for _, val := range g.gRM.pixelData </span><span class="cov10" title="9012">{
-                if !val.err </span><span class="cov9" title="8712">{
+                if !val.err </span><span class="cov9" title="9011">{
                         g.gRM.yGraphMin = math.Min(g.gRM.yGraphMin, val.y)
                         g.gRM.yGraphMax = math.Max(g.gRM.yGraphMax, val.y)
 
@@ -1081,11 +1077,11 @@ func (g *graphModel) graphDraw() <span class="cov3" title="11">{
         for i, value := range g.gRM.pixelData </span><span class="cov10" title="6608">{
 
                 // if pixel have err==true, skip drawing
-                if value.err </span><span class="cov6" title="300">{
+                if value.err </span><span class="cov1" title="1">{
                         oldErr = true
                         continue</span>
                 }
-                <span class="cov9" title="6308">t.Clg.DeepDebug(fmt.Sprintf("_graphDraw_ pixel: I=%d Err=%v X=%.5f Y=%.5f", i, value.err, value.x, value.y))
+                <span class="cov9" title="6607">t.Clg.DeepDebug(fmt.Sprintf("_graphDraw_ pixel: I=%d Err=%v X=%.5f Y=%.5f", i, value.err, value.x, value.y))
 
                 // find y coordinate for draw graph
                 y := int(0 - (value.y * deltaY) + float64(sdvig))
@@ -1094,24 +1090,24 @@ func (g *graphModel) graphDraw() <span class="cov3" title="11">{
                 // cut y beyond canvas
                 if y &lt; 0 </span><span class="cov9" title="3787">{
                         y = -1
-                }</span> else<span class="cov9" title="2521"> if y &gt;= int(g.config.YWindowGraph) </span><span class="cov7" title="601">{
+                }</span> else<span class="cov9" title="2820"> if y &gt;= int(g.config.YWindowGraph) </span><span class="cov7" title="601">{
                         y = int(g.config.YWindowGraph) + 1
                 }</span>
 
                 // if y in windowgraph - draw pixel
-                <span class="cov9" title="6308">if y &gt; 0-10 &amp;&amp; y &lt; int(g.config.YWindowGraph)+10 </span><span class="cov9" title="6308">{
+                <span class="cov9" title="6607">if y &gt; 0-10 &amp;&amp; y &lt; int(g.config.YWindowGraph)+10 </span><span class="cov9" title="6607">{
                         g.gRM.graphImage.Set(i, y, color.RGBA{R: 0x9D, A: 0xFF})
 
                         // if nessesary, draw vertical line
-                        if i != 0 </span><span class="cov9" title="6297">{
-                                if math.Abs(float64(pixelOldY-y)) &gt;= 1.5 &amp;&amp; !oldErr </span><span class="cov7" title="754">{
+                        if i != 0 </span><span class="cov9" title="6596">{
+                                if math.Abs(float64(pixelOldY-y)) &gt;= 1.5 &amp;&amp; !oldErr </span><span class="cov7" title="758">{
                                         g.drawVLine(g.gRM.graphImage, 1, int(math.Abs(float64(pixelOldY-y)))-1, i-1, int(math.Min(float64(pixelOldY), float64(y))), color.RGBA{R: 0x9D, A: 0xFF})
                                 }</span>
                         }
                 }
 
                 // remember pixel for next vertical line
-                <span class="cov9" title="6308">pixelOldY = y
+                <span class="cov9" title="6607">pixelOldY = y
                 oldErr = false</span>
         }
 }
@@ -1390,9 +1386,9 @@ func (g *graphModel) arrowH(img draw.Image, x0, y0 int, c color.Color) <span cla
 }
 
 // Draw vertical line
-func (g *graphModel) drawVLine(img draw.Image, width, heigth, x0, y0 int, c color.Color) <span class="cov4" title="835">{
-        for y := y0; y &lt; int(g.config.YWindowGraph) &amp;&amp; y &lt; y0+heigth; y++ </span><span class="cov6" title="43090">{
-                for i := 0; i &lt; width; i++ </span><span class="cov7" title="55872">{
+func (g *graphModel) drawVLine(img draw.Image, width, heigth, x0, y0 int, c color.Color) <span class="cov4" title="839">{
+        for y := y0; y &lt; int(g.config.YWindowGraph) &amp;&amp; y &lt; y0+heigth; y++ </span><span class="cov6" title="43110">{
+                for i := 0; i &lt; width; i++ </span><span class="cov7" title="55892">{
                         img.Set(x0+i, y, c)
                 }</span>
         }

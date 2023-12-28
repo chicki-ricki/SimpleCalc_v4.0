@@ -67,6 +67,7 @@ func (e *equationModel) onlyCheck() (string, error) {
 
 // calculate prepared string
 func (e *equationModel) onlyCalculate(str string) (rez float64, err error) {
+	e.err = nil
 	if str != "" {
 		t.Clg.Debug(fmt.Sprintf("_onlyCalculate_ input string:|%s|", str))
 		if rez, err = e.startCalculate(str); err != nil {

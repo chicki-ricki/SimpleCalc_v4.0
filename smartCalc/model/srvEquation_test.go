@@ -155,12 +155,11 @@ func TestOnlyCalculate(t *testing.T) {
 	if err == nil {
 		t.Errorf("Equations onlyCalculate incorrect - expected: err=|%v|; actual: err=|%v|", true, false)
 	}
-	er.equation = ("42e-2*350")
+	er.equation = ("42e-2*350") // rez = 147
 	rez, err = er.onlyCalculate(er.prepareString(er.equation))
-	if err == nil && rez == 147 {
-		t.Errorf("Equations onlyCalculate incorrect - expected: err=|%v|; actual: err=|%v|", true, false)
+	if err != nil || rez != 147 {
+		t.Errorf("Equations onlyCalculate incorrect - expected: err=|%v|; actual: err=|%v|", nil, err)
 	}
-
 	_, err = er.onlyCalculate("")
 	if err == nil {
 		t.Errorf("Equations onlyCalculate incorrect - expected: err=|%v|; actual: err=|%v|", true, false)
