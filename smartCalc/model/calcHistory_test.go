@@ -188,19 +188,19 @@ func TestWriteHistoryJson(t *testing.T) {
 	os.Remove("history_test.json")
 
 	//Check Not write
-	_, _ = os.Create(TestPath + "/temphistory")
-	_ = os.Chmod(TestPath+"/temphistory", 0444)
+	os.Create(TestPath + "/temphistory")
+	os.Chmod(TestPath+"/temphistory", 0444)
 	tempFileName := calc.history.fileName
 	calc.history.fileName = TestPath + "/temphistory"
 	if calc.history.writeHistoryJson([]byte("Check write")) == nil {
 		t.Errorf("Writing History JSON incorrect - expected: error ; actual: nill")
 	}
-	_ = os.Chmod(TestPath+"/temphistory", 0644)
+	os.Chmod(TestPath+"/temphistory", 0644)
 	os.Remove(TestPath + "/temphistory")
 	calc.history.fileName = tempFileName
 
 	// Check write
-	_ = calc.history.writeHistoryJson(calc.history.createHistoryJson())
+	calc.history.writeHistoryJson(calc.history.createHistoryJson())
 	calc.history.historyData = []d.HistoryItem{}
 	calc.history.historyData = readHistoryJson("history_test.json")
 	os.Remove("history_test.json")
@@ -224,11 +224,11 @@ func TestReadHistoryJson(t *testing.T) {
 		t.Errorf("Reading History JSON incorrect - expected: %v ; actual: %v", 1, len(calc.history.historyData))
 	}
 
-	_ = os.WriteFile(TestPath+"/temphistory", []byte("Check!"), 0111)
+	os.WriteFile(TestPath+"/temphistory", []byte("Check!"), 0111)
 	if len(readHistoryJson(TestPath+"/temphistory")) > 0 {
 		t.Errorf("Reading History JSON incorrect - expected: empty ; actual: no empty")
 	}
-	_ = os.Chmod(TestPath+"/temphistory", 0644)
+	os.Chmod(TestPath+"/temphistory", 0644)
 	if len(readHistoryJson(TestPath+"/temphistory")) > 0 {
 		t.Errorf("Unmarshall JSON incorrect - expected: empty ; actual: no empty")
 	}

@@ -11,7 +11,7 @@ import (
 func main() {
 
 	t.FileCheck(d.NeccessoryFiles)
-	beego.BConfig.Listen.Graceful = true
+	beego.BConfig.Listen.Graceful = false
 
 	defer t.Clg.LogFile.Close()
 

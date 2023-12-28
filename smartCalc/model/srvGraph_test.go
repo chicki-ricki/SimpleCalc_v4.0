@@ -534,7 +534,7 @@ func TestDrawLogo(t *testing.T) {
 			fmt.Println("Can't load test image")
 		}
 
-		_ = os.WriteFile(TestPath+"/temptype", []byte("Check!"), 0644)
+		os.WriteFile(TestPath+"/temptype", []byte("Check!"), 0644)
 		er.config.TypePath = TestPath + "/temptype"
 		er.fillBackground(er.gRM.graphImage, color.White)
 		er.drawLogo(er.gRM.graphImage, 21, "SmartCalc")
